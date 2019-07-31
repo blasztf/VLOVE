@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:support="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="9.0dip"
+    android:paddingLeft="15.0dip"
+    android:paddingRight="15.0dip"
+    android:paddingTop="7.0dip"
+    android:background="@drawable/color_item_selector" >
+
+    <ImageView
+        android:id="@+id/videoThumb"
+        android:layout_width="138.0dip"
+        android:layout_height="77.0dip"
+        android:layout_marginTop="2.0dip"
+        android:contentDescription="@string/video_thumbnail_description"
+        support:layout_constraintLeft_toLeftOf="parent"
+        support:layout_constraintTop_toTopOf="parent"
+        tools:src="@mipmap/ic_launcher"/>
+
+    <ImageView
+        android:layout_width="0.0dip"
+        android:layout_height="0.0dip"
+        support:layout_constraintBottom_toBottomOf="@id/videoThumb"
+        support:layout_constraintLeft_toLeftOf="@id/videoThumb"
+        support:layout_constraintRight_toRightOf="@id/videoThumb"
+        support:layout_constraintTop_toTopOf="@id/videoThumb"
+        android:src="@drawable/outline_1dp_11000000"
+        android:contentDescription="@string/app_name"
+        tools:src="@drawable/outline_1dp_11000000"/>
+
+    <TextView
+        android:id="@+id/tvVodLength"
+        style="@style/RobotoRegular"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        support:layout_constraintBottom_toBottomOf="@id/videoThumb"
+        support:layout_constraintRight_toRightOf="@id/videoThumb"
+        android:background="@color/black_opa90"
+        android:maxLines="1"
+        android:paddingBottom="3.0dip"
+        android:paddingLeft="5.0dip"
+        android:paddingRight="5.0dip"
+        android:paddingTop="3.0dip"
+        android:singleLine="true"
+        android:textColor="#ffffffff"
+        android:textSize="12.0dip"
+        android:contentDescription="@string/app_name"
+        tools:text="00:00:00" />
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/RobotoRegular"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15.0dip"
+        support:layout_constraintLeft_toRightOf="@id/videoThumb"
+        support:layout_constraintRight_toRightOf="parent"
+        android:ellipsize="end"
+        android:lineSpacingExtra="2.0dip"
+        android:maxLines="2"
+        android:textColor="@color/black_opa50"
+        android:textSize="16.0dip"
+        tools:text="Title"/>
+
+    <TextView
+        android:id="@+id/channelName"
+        style="@style/RobotoRegular"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3.0dip"
+        support:layout_constraintLeft_toLeftOf="@id/title"
+        support:layout_constraintRight_toRightOf="parent"
+        support:layout_constraintTop_toBottomOf="@id/title"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="#ff777777"
+        android:textSize="12.0dip"
+        tools:text="Channel Name"/>
+
+    <TextView
+        android:id="@+id/downloadQuality"
+        style="@style/RobotoRegular"
+        android:layout_width="0.0dip"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5.0dip"
+        support:layout_constraintLeft_toLeftOf="@id/title"
+        support:layout_constraintRight_toRightOf="parent"
+        support:layout_constraintTop_toBottomOf="@id/channelName"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="#ff777777"
+        android:textSize="12.0dip"
+        tools:text="480p"/>
+
+</android.support.constraint.ConstraintLayout>

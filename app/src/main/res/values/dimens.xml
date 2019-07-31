@@ -1,0 +1,14 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="menu_text_size">16.0dip</dimen>
+    <dimen name="title_text_size">22.0sp</dimen>
+    <dimen name="pref_content_pad">10.0dip</dimen>
+    <dimen name="board_header_item_margin">10.0dip</dimen>
+    <dimen name="board_item_profile_image_size">50.0dip</dimen>
+    <dimen name="board_item_content_margin">5.0dip</dimen>
+    <dimen name="board_item_comment_padding_start">20.0dip</dimen>
+    <dimen name="board_item_post_comment_margin">5.0dip</dimen>
+    <dimen name="board_max_sticker_size">100.0dip</dimen>
+    <dimen name="board_remove_button_size">50.0dip</dimen>
+    <dimen name="saver_dialog_image_loading_max_size">96.0dip</dimen>
+</resources>

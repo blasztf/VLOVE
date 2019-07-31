@@ -1,0 +1,127 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">V LOVE</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="saver_start">Start</string>
+
+    <!-- Available menu for V Love -->
+    <string-array name="list_menu_titles">
+        <item>@string/pref_group_vpopup</item>
+        <item>@string/pref_group_vboard</item>
+        <item>@string/pref_group_vlater</item>
+        <item>@string/pref_group_vsaver</item>
+    </string-array>
+
+    <string name="vlive_not_installed">V Live App is not installed. Please install it first to use this app.</string>
+    <string name="vlive_not_opened">Failed to open V Live App.</string>
+
+    <!-- Popup Menu -->
+    <string name="popup_close">Close</string>
+    <string name="popup_watch">Watch</string>
+    <string name="popup_install">Install</string>
+    <string name="popup_ok">OK</string>
+
+    <!-- Board Menu -->
+    <string name="board_hint">Post share link (ex: http://channels.vlive.tv/FE815/fan/1.6097026)</string>
+    <string name="board_link_not_valid">Link post is not valid</string>
+    <string name="board_post_delete_fail">Failed to delete post!</string>
+    <string name="board_post_exceed" tools:ignore="PluralsCandidate">This app can save posts up to %1$d posts only.\nPlease remove some posts</string>
+    <string name="board_sync_wait">Please wait, still synchronizing post&#8230;</string>
+    <string name="board_sync_fail">Failed to sync post!</string>
+    <string name="board_sync_button">Sync Post</string>
+    <string name="board_greet">Hi, %1$s</string>
+    <string name="board_post_already_sync">You have already sync this post!</string>
+    <string name="board_total_comment">Total comments: %1$d</string>
+    <string name="board_notification_comment">%1$s has commented on your post</string>
+    <string name="board_post_contains_media">This post contains media attachments</string>
+    <string name="board_open_post_fail_1">Failed to open this post</string>
+    <string name="board_open_post_fail_2"><![CDATA[Try remove & sync this post again]]></string>
+
+    <!-- Later Menu -->
+    <string name="later_download_video_list">My Downloads</string>
+    <string name="later_offline_note">You can watch videos offline once they are downloaded.</string>
+
+    <!-- Saver Menu -->
+    <string name="saver_copy_to_download">Copy url to download. Tap here to stop.</string>
+    <string name="saver_has_been_stopped">V Saver has been stopped!</string>
+    <string name="saver_wait">Please wait&#8230;</string>
+    <string name="saver_save">Save</string>
+    <string name="saver_cancel">Cancel</string>
+
+    <!-- Permissions settings -->
+    <string name="perm_write_ext_denied_button">OK</string>
+    <string name="perm_write_ext_denied_title">Write external permission</string>
+    <string name="perm_write_ext_denied_message">Write external permission is needed to save video to this device so you can watch your favorite vlive idol video anywhere without using internet connection (ex. scenario: go to free wi-fi hotspot area (like mcDonald\'s, cafe, etc.), download your favorite idol vlive video, watch it anywhere ;-) ). SAVE YOUR DATA PLAN! MWAHAHAHA!!!</string>
+
+    <!-- Strings related to Settings -->
+    <string name="pref_settings">Settings</string>
+    <string name="pref_choose">Choose \"%1$s\"</string>
+
+    <!-- Settings for menu V Popup -->
+    <string name="pref_group_vpopup">V Popup</string>
+    <string name="pref_title_enable_popup">Enable Notification Listener</string>
+    <string name="pref_title_is_vibrate">Use vibrate</string>
+    <string name="pref_title_whitelist_channel">Whitelist Channel</string>
+    <string name="pref_title_blacklist_channel">Blacklist Channel</string>
+    <string name="pref_key_is_vibrate">key_popup_vibrate</string>
+    <string name="pref_key_whitelist_channel">key_popup_wchannel</string>
+    <string name="pref_key_blacklist_channel">key_popup_bchannel</string>
+
+    <!-- Settings for menu V Board -->
+    <string name="pref_group_vboard">V Board</string>
+    <string name="pref_title_sync_post_interval">Sync post interval</string>
+    <string-array name="pref_sync_post_interval_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_post_interval_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+    <string name="pref_title_user">Change username</string>
+    <string name="pref_key_sync_post_interval">key_board_interval</string>
+    <string name="pref_key_user">key_board_user</string>
+
+    <!-- Settings for menu V Later -->
+    <string name="pref_group_vlater">V Later</string>
+
+    <!-- Settings fot menu V Saver -->
+    <string name="pref_group_vsaver">V Saver</string>
+    <string name="pref_title_download_path">Download Path</string>
+    <string-array name="pref_download_path_titles">
+        <item>Internal Storage</item>
+        <item>External Storage</item>
+    </string-array>
+    <string-array name="pref_download_path_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    <string name="pref_title_enable_overlay">Enable Overlay Permission</string>
+    <string name="pref_key_download_path">key_saver_dpath</string>
+
+    <!-- About -->
+    <string name="pref_group_about">About</string>
+    <string name="pref_title_version">Version</string>
+
+    <string name="post_user_image_description">Post user image.</string>
+    <string name="latest_comment_user_image_description">Latest comment user image.</string>
+    <string name="latest_comment_sticker_description">Latest comment sticker.</string>
+    <string name="video_thumbnail_description">Video thumbnail.</string>
+    <string name="video_resolution_thumbnail_description">Video resolution thumbnail.</string>
+    <string name="loading">Loading&#8230;</string>
+    <string name="downloading_content">Downloading %1$s&#8230;</string>
+    <string name="downloaded_content">%1$s downloaded</string>
+    <string name="download_content_fail">Failed to download %1$s</string>
+    <string name="saver_no_subs">No Subtitles</string>
+    <string name="title_share">Save video</string>
+    <string name="share_text_not_valid_video">Not a valid VLive video!</string>
+
+</resources>

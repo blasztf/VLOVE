@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <color name="colorPrimary">#FF191919</color>
+    <color name="colorPrimaryDark">#FF111111</color>
+    <color name="colorAccent">#FF54F7FF</color>
+
+    <color name="color_light_blue" tools:keep="@color/color_light_blue">#ff1ecfff</color>
+    <color name="color_light_blue_alt">#ff54f7ff</color>
+    <color name="color_light_black">#ff46465a</color>
+    <color name="color_light_black_alt" tools:keep="@color/color_light_black_alt">#FF1A1A1A</color>
+    <color name="color_light_black_alt2">#FF3A3A3A</color>
+    <color name="color_light_pink">#fff41970</color>
+    <color name="color_text">@color/color_light_black</color>
+    <color name="color_bar" tools:keep="@color/color_bar">@color/color_light_blue_alt</color>
+
+    <color name="common_white">#ffffffff</color>
+    <color name="common_black" tools:keep="@color/common_black">#ff000000</color>
+    <color name="black_opa05">#0d000000</color>
+    <color name="black_opa50">#80000000</color>
+    <color name="black_opa90">#e5000000</color>
+</resources>

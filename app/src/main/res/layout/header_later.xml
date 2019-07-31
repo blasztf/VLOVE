@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            style="@style/RobotoBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15.0dip"
+            android:layout_marginRight="15.0dip"
+            android:layout_marginTop="18.0dip"
+            android:lineSpacingExtra="1.5dip"
+            android:text="@string/later_download_video_list"
+            android:textColor="#ff464658"
+            android:textSize="18.0dip" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="7.0dip"
+            android:background="@drawable/title_gradation" />
+    </FrameLayout>
+
+    <TextView
+        style="@style/RobotoRegular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15.0dip"
+        android:layout_marginLeft="15.0dip"
+        android:layout_marginRight="15.0dip"
+        android:layout_marginTop="4.0dip"
+        android:lineSpacingExtra="1.0dip"
+        android:text="@string/later_offline_note"
+        android:textColor="@color/black_opa50"
+        android:textSize="13.0dip" />
+
+</LinearLayout>

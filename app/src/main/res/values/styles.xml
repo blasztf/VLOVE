@@ -1,0 +1,40 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/common_white</item>
+    </style>
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="RobotoRegular">
+        <item name="android:textStyle">normal</item>
+        <item name="android:includeFontPadding">true</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="RobotoMedium">
+        <item name="android:includeFontPadding">true</item>
+        <item name="android:fontFamily">sans-serif</item>
+    </style>
+
+    <style name="RobotoBold" parent="@style/RobotoMedium">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="RobotoBlack" parent="@style/RobotoBold" />
+
+    <style name="SupportBarTitle" parent="@style/RobotoBlack">
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textColor">@color/color_light_black_alt</item>
+    </style>
+
+    <style name="DialogTheme" parent="@android:style/Theme.Holo.Dialog.NoActionBar.MinWidth">
+        <item name="android:textColorPrimary">@color/color_light_black_alt</item>
+    </style>
+
+</resources>

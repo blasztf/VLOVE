@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_group_vpopup"
+        android:layout="@layout/category_preference" >
+
+        <Preference
+            android:title="@string/pref_title_enable_popup" >
+            <intent
+                android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
+        </Preference>
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/pref_key_is_vibrate"
+            android:title="@string/pref_title_is_vibrate" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="@string/pref_title_whitelist_channel"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_key_whitelist_channel" />
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="@string/pref_title_blacklist_channel"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_key_blacklist_channel" />
+    </PreferenceCategory>
+</PreferenceScreen>

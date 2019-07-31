@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_group_vsaver"
+        android:layout="@layout/category_preference" >
+
+        <Preference
+            android:title="@string/pref_title_enable_overlay" >
+            <intent
+                android:action="android.settings.action.MANAGE_OVERLAY_PERMISSION"
+                android:data="package:com.navers.vlove" />
+        </Preference>
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/pref_download_path_titles"
+            android:entryValues="@array/pref_download_path_values"
+            android:key="@string/pref_key_download_path"
+            android:title="@string/pref_title_download_path" />
+    </PreferenceCategory>
+</PreferenceScreen>

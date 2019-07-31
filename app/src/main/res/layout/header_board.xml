@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/greet"
+        style="@style/RobotoBlack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/board_header_item_margin"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/color_light_black"
+        tools:text="Username" />
+
+    <EditText
+        android:id="@+id/postLink"
+        style="@style/RobotoMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/board_header_item_margin"
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/board_hint"
+        android:inputType="textUri"
+        android:textColor="@color/black_opa50"
+        android:textColorHint="@color/black_opa05"
+        tools:text="Post Link">
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        style="@style/RobotoBlack"
+        android:id="@+id/postSync"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/board_header_item_margin"
+        android:background="@drawable/color_btn_selector"
+        android:textColor="@color/color_light_black"
+        tools:text="Sync Post"/>
+
+</LinearLayout>
