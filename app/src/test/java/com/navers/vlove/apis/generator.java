@@ -1,6 +1,6 @@
 package com.navers.vlove.apis;
 
-import android.util.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
@@ -19,15 +19,15 @@ class generator {
 
     private String decrypt(String encrypted, String key) {
         try {
-            byte[] decry = Base64.decode(encrypted, Base64.DEFAULT);
+            byte[] decry = Base64.decodeBase64(encrypted);
 
             byte[] ivByte = subBytes(decry, 0x00000000, 0x00000010);
             byte[] decrypt = subBytes(decry, 0x00000010, decry.length - 0x00000010);
 
             IvParameterSpec iv = new IvParameterSpec(ivByte);
-            SecretKeySpec skeySpec = new SecretKeySpec(Base64.decode(key, Base64.DEFAULT), new String(Base64.decode("QUVT", Base64.DEFAULT)));
+            SecretKeySpec skeySpec = new SecretKeySpec(Base64.decodeBase64(key), new String(Base64.decodeBase64("QUVT")));
 
-            Cipher cipher = Cipher.getInstance(new String(Base64.decode("QUVTL0NCQy9QS0NTNVBBRERJTkc=", Base64.DEFAULT)));
+            Cipher cipher = Cipher.getInstance(new String(Base64.decodeBase64("QUVTL0NCQy9QS0NTNVBBRERJTkc=")));
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
 
             byte[] decrypted = cipher.doFinal(decrypt);

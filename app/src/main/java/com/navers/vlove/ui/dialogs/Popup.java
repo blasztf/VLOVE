@@ -40,7 +40,7 @@ public class Popup extends BaseDialog {
     private String mMessage;
     private PendingIntent mAction;
 
-    public static Popup with(Context context, int id) {
+    public static synchronized Popup with(Context context, int id) {
         return new Popup(context, id);
     }
 
@@ -124,7 +124,7 @@ public class Popup extends BaseDialog {
         }
 
         private void setContentView() {
-            setContentView(R.layout.activity_popup);
+            setContentView(R.layout.activity_dialog_popup);
 
             mTitle = findViewById(R.id.contentTitle);
             mMessage = findViewById(R.id.contentMessage);
@@ -156,7 +156,6 @@ public class Popup extends BaseDialog {
                     mNegative.setVisibility(View.GONE);
                     mPositive.setText(R.string.popup_ok);
                     break;
-
             }
 
             mMessage.setText(message);
@@ -190,7 +189,7 @@ public class Popup extends BaseDialog {
         }
 
         private PendingIntent determineAction(String title) {
-            return title.equals("NOT_INSTALLED") ?
+            return "NOT_INSTALLED".equals(title) ?
                     getInstallAppIntent("com.naver.vapp") :
                     null;
         }

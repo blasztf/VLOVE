@@ -40,7 +40,18 @@
             android:theme="@style/DialogTheme"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait">
-            <intent-filter android:label="@string/title_share">
+            <intent-filter android:label="@string/share_save_video">
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.dialogs.Translator$Dialog"
+            android:excludeFromRecents="true"
+            android:theme="@style/DialogTheme"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait">
+            <intent-filter android:label="@string/share_translate_text">
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
@@ -56,6 +67,7 @@
         <service android:name=".services.SaverService" />
         <service android:name=".services.DownloaderService" />
         <service android:name=".services.BoardService" />
+        <service android:name=".services.TranslatorService" />
 
         <receiver android:name=".broadcasters.BoardBroadcasters">
             <intent-filter>

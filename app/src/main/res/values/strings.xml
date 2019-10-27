@@ -2,7 +2,7 @@
     <string name="app_name">V LOVE</string>
 
     <string name="action_settings">Settings</string>
-    <string name="saver_start">Start</string>
+    <string name="btntxt_start">Start</string>
 
     <!-- Available menu for V Love -->
     <string-array name="list_menu_titles">
@@ -10,6 +10,7 @@
         <item>@string/pref_group_vboard</item>
         <item>@string/pref_group_vlater</item>
         <item>@string/pref_group_vsaver</item>
+        <item>@string/pref_group_vtrans</item>
     </string-array>
 
     <string name="vlive_not_installed">V Live App is not installed. Please install it first to use this app.</string>
@@ -47,6 +48,10 @@
     <string name="saver_wait">Please wait&#8230;</string>
     <string name="saver_save">Save</string>
     <string name="saver_cancel">Cancel</string>
+
+    <!-- Trans Menu -->
+    <string name="trans_fail">Fail to translate requested text</string>
+    <string name="trans_translate">Translate</string>
 
     <!-- Permissions settings -->
     <string name="perm_write_ext_denied_button">OK</string>
@@ -107,6 +112,10 @@
     <string name="pref_title_enable_overlay">Enable Overlay Permission</string>
     <string name="pref_key_download_path">key_saver_dpath</string>
 
+    <!-- Settings for menu V Trans / V Translator -->
+    <string name="pref_group_vtrans">V Trans</string>
+
+
     <!-- About -->
     <string name="pref_group_about">About</string>
     <string name="pref_title_version">Version</string>
@@ -121,7 +130,8 @@
     <string name="downloaded_content">%1$s downloaded</string>
     <string name="download_content_fail">Failed to download %1$s</string>
     <string name="saver_no_subs">No Subtitles</string>
-    <string name="title_share">Save video</string>
+    <string name="share_save_video">Save video</string>
+    <string name="share_translate_text">Translate</string>
     <string name="share_text_not_valid_video">Not a valid VLive video!</string>
 
 </resources>

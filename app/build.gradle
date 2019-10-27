@@ -22,6 +22,10 @@ android {
     productFlavors {
     }
     buildToolsVersion '28.0.3'
+    compileOptions {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+    }
 }
 
 dependencies {
@@ -41,6 +45,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'com.airbnb.android:lottie:2.5.5'
     implementation 'com.karumi:dexter:5.0.0'
+    implementation 'commons-codec:commons-codec:1.13'
+    implementation 'org.apache.commons:commons-collections4:4.4'
     implementation files('libs/toolkit.jar')
     implementation project(':exeater')
 }

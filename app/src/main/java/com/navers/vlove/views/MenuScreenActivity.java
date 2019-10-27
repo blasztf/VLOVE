@@ -123,11 +123,18 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
                 openLater();
             }
         });
-        listMenu.add(new MenuItemModel(getString(R.string.pref_group_vsaver), Button.class, getString(R.string.saver_start)) {
+        listMenu.add(new MenuItemModel(getString(R.string.pref_group_vsaver), Button.class, getString(R.string.btntxt_start)) {
             @Override
             public void onAction(boolean state) {
                 super.onAction(state);
                 openSaver();
+            }
+        });
+        listMenu.add(new MenuItemModel(getString(R.string.pref_group_vtrans), View.class) {
+            @Override
+            public void onAction(boolean state) {
+                super.onAction(state);
+                openTrans();
             }
         });
         listMenu.add(new MenuItemModel(getString(R.string.action_settings), ImageView.class) {
@@ -144,7 +151,6 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
     private boolean isVLiveInstalled() {
         return AppSettings.getInstance(this).isVLiveInstalled();
     }
-
 
     private void openVApp() {
         try {
@@ -208,6 +214,10 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
                     }
                 })
                 .check();
+    }
+
+    private void openTrans() {
+        openSettings();
     }
 
     private void openSettings() {
