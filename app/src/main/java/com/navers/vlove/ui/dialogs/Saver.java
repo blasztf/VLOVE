@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,8 +39,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Saver extends BaseDialog {
-    private String mURI;
+public class Saver extends BaseDialog implements View.OnClickListener {
+    private static final String VIDEO_URL = Saver.class.getSimpleName() + ".VIDEO_URL:LString";
+
+    private int selectedVideo, selectedCaption;
+    private VideoOnDemandRetriever.Data selectedVOD;
+
+    private SaverBroadcaster broadcaster;
+
+    private TextView title, loadingStatus;
+    private LinearLayout dialogScreen, loadingScreen;
+    private ProgressBar loadingProgress;
+    private LottieAnimationView loadingImage;
+    private RecyclerView videoRes;
+    private NumberPicker captionList;
+    private Button cancel, save;
 
     public static Saver with(Context context, String videoURI) {
         return new Saver(context).setVideo(videoURI);
@@ -51,348 +63,326 @@ public class Saver extends BaseDialog {
         super(context);
     }
 
+    @BuilderMethod
     private Saver setVideo(String uri) {
-        mURI = uri;
+        getIntent().putExtra(Saver.VIDEO_URL, uri);
         return this;
     }
 
     @Override
-    public void show() {
-        Intent intent = new Intent(getContext(), Dialog.class);
-        intent.putExtra(Dialog.VIDEO_URL, mURI);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-        getContext().startActivity(intent);
-        clearContext();
+    protected int getContentViewId() {
+        return R.layout.activity_dialog_saver;
     }
 
-    public static class Dialog extends android.app.Activity implements View.OnClickListener {
-        private static final String VIDEO_URL = Dialog.class.getSimpleName() + ".VIDEO_URL:LString";
+    @Override
+    protected void onPrepareContentViewElement() {
+        dialogScreen    = findViewById(R.id.dialogScreen);
+        title           = findViewById(R.id.title);
+        loadingScreen   = findViewById(R.id.loadingScreen);
+        loadingProgress = findViewById(R.id.loadingProgress);
+        loadingImage    = findViewById(R.id.loadingImage);
+        loadingStatus   = findViewById(R.id.loadingStatus);
+        videoRes        = findViewById(R.id.videoRes);
+        captionList     = findViewById(R.id.captionList);
+        cancel          = findViewById(R.id.cancel);
+        save            = findViewById(R.id.save);
+    }
 
-        private TextView title, loadingStatus;
-        private LinearLayout dialogScreen, loadingScreen;
-        private ProgressBar loadingProgress;
-        private LottieAnimationView loadingImage;
-        private RecyclerView videoRes;
-        private NumberPicker captionList;
-        private Button cancel, save;
+    @Override
+    protected void onReady(Intent intent) {
+        if (!VAPIS.isExpired(this)) {
+            main();
+        } else {
+            startActivity(new Intent(this, MenuScreenActivity.class));
+            finish();
+        }
+    }
 
-        private int selectedVideo, selectedCaption;
-        private VideoOnDemandRetriever.Data selectedVOD;
+    @Override
+    protected void onDestroy() {
+        // TODO Auto-generated method stub
+        super.onDestroy();
+        if (broadcaster != null) {
+            unregisterReceiver(broadcaster);
+        }
+    }
 
-        private SaverBroadcaster broadcaster;
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            // TODO Auto-generated method stub
-            super.onCreate(savedInstanceState);
-            if (!VAPIS.isExpired(this)) {
-                main();
-            } else {
-                startActivity(new Intent(this, MenuScreenActivity.class));
+    @Override
+    public void onClick(View v) {
+        // TODO Auto-generated method stub
+        switch (v.getId()) {
+            case R.id.save:
+                downloadVideo();
+                break;
+            case R.id.cancel:
                 finish();
+                break;
+        }
+    }
+
+    private void main() {
+        cancel.setOnClickListener(this);
+        save.setOnClickListener(this);
+
+        loadingProgress.getProgressDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_light_blue_alt), PorterDuff.Mode.SRC_IN);
+
+        videoRes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        videoRes.addOnItemTouchListener(new RecyclerViewCompat.OnItemClickListener(videoRes) {
+
+            @Override
+            public void onItemClick(View view, int position) {
+                // TODO Auto-generated method stub
+                super.onItemClick(view, position);
+                selectedVideo = position;
+            }
+
+        });
+
+        PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+        pagerSnapHelper.attachToRecyclerView(videoRes);
+
+        String url = getIntent().getStringExtra(VIDEO_URL);
+        if (Intent.ACTION_SEND.equals(getIntent().getAction())) {
+            String type;
+            if ((type = getIntent().getType()) != null && type.startsWith("text/")) {
+                url = getIntent().getStringExtra(Intent.EXTRA_TEXT);
             }
         }
+        url = filterShareText(url);
 
-        @Override
-        protected void onDestroy() {
-            // TODO Auto-generated method stub
-            super.onDestroy();
-            if (broadcaster != null) {
-                unregisterReceiver(broadcaster);
-            }
-        }
-
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-            switch (v.getId()) {
-                case R.id.save:
-                    downloadVideo();
-                    break;
-                case R.id.cancel:
-                    finish();
-                    break;
-            }
-        }
-
-        private void main() {
-            setContentView(R.layout.activity_dialog_saver);
-
-            dialogScreen = findViewById(R.id.dialogScreen);
-            title = findViewById(R.id.title);
-            loadingScreen = findViewById(R.id.loadingScreen);
-            loadingProgress = findViewById(R.id.loadingProgress);
-            loadingImage = findViewById(R.id.loadingImage);
-            loadingStatus = findViewById(R.id.loadingStatus);
-            videoRes = findViewById(R.id.videoRes);
-            captionList = findViewById(R.id.captionList);
-            cancel = findViewById(R.id.cancel);
-            save = findViewById(R.id.save);
-
-            cancel.setOnClickListener(this);
-            save.setOnClickListener(this);
-
-            loadingProgress.getProgressDrawable().setColorFilter(ContextCompat.getColor(this, R.color.color_light_blue_alt), PorterDuff.Mode.SRC_IN);
-
-            videoRes.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-            videoRes.addOnItemTouchListener(new RecyclerViewCompat.OnItemClickListener(videoRes) {
-
+        if (url == null) {
+            Toast.makeText(this, R.string.share_text_not_valid_video, Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            VideoOnDemandRetriever.retrieve(this, url, new VideoOnDemandRetriever.OnRetrievedListener() {
                 @Override
-                public void onItemClick(View view, int position) {
-                    // TODO Auto-generated method stub
-                    super.onItemClick(view, position);
-                    selectedVideo = position;
-                }
+                public void onRetrieved(VideoOnDemandRetriever.Data data) {
+                    selectedVOD = data;
+                    title.setText(data.videos.get(0).getTitle());
 
-            });
+                    VideoResAdapter adapter = new VideoResAdapter(data.videos.get(0).getCover(), data.videos);
+                    videoRes.setAdapter(adapter);
 
-            PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
-            pagerSnapHelper.attachToRecyclerView(videoRes);
+                    if (data.captions.size() > 0) {
+                        ArrayList<String> listCaption = new ArrayList<>();
 
-            String url = getIntent().getStringExtra(VIDEO_URL);
-            if (Intent.ACTION_SEND.equals(getIntent().getAction())) {
-                String type;
-                if ((type = getIntent().getType()) != null && type.startsWith("text/")) {
-                    url = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-                }
-            }
-            url = filterShareText(url);
+                        listCaption.add(Saver.this.getString(R.string.saver_no_subs));
+                        for (VideoOnDemand.Caption caption : data.captions) {
+                            listCaption.add(caption.getLabel() + " " + caption.getCategory());
+                        }
 
-            if (url == null) {
-                Toast.makeText(this, R.string.share_text_not_valid_video, Toast.LENGTH_LONG).show();
-                finish();
-            } else {
-                VideoOnDemandRetriever.retrieve(this, url, new VideoOnDemandRetriever.OnRetrievedListener() {
-                    @Override
-                    public void onRetrieved(VideoOnDemandRetriever.Data data) {
-                        selectedVOD = data;
-                        title.setText(data.videos.get(0).getTitle());
+                        captionList.setWrapSelectorWheel(false);
+                        captionList.setMinValue(0);
+                        captionList.setMaxValue(listCaption.size() - 1);
+                        captionList.setDisplayedValues(listCaption.toArray(new String[0]));
+                        captionList.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
 
-                        VideoResAdapter adapter = new VideoResAdapter(data.videos.get(0).getCover(), data.videos);
-                        videoRes.setAdapter(adapter);
-
-                        if (data.captions.size() > 0) {
-                            ArrayList<String> listCaption = new ArrayList<>();
-
-                            listCaption.add(Dialog.this.getString(R.string.saver_no_subs));
-                            for (VideoOnDemand.Caption caption : data.captions) {
-                                listCaption.add(caption.getLabel() + " " + caption.getCategory());
+                            @Override
+                            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                                // TODO Auto-generated method stub
+                                selectedCaption = newVal - 1;
                             }
+                        });
 
-                            captionList.setWrapSelectorWheel(false);
-                            captionList.setMinValue(0);
-                            captionList.setMaxValue(listCaption.size() - 1);
-                            captionList.setDisplayedValues(listCaption.toArray(new String[listCaption.size()]));
-                            captionList.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-
-                                @Override
-                                public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                                    // TODO Auto-generated method stub
-                                    selectedCaption = newVal - 1;
-                                }
-                            });
-
-                            listCaption.clear();
-                        } else {
-                            selectedCaption = -1;
-                            captionList.setVisibility(View.GONE);
-                        }
-
-                        RecyclerView.ViewHolder vh = videoRes.findViewHolderForAdapterPosition(0);
-                        if (vh != null) {
-                            vh.itemView.performClick();
-                        }
-
-                        end();
+                        listCaption.clear();
+                    } else {
+                        selectedCaption = -1;
+                        captionList.setVisibility(View.GONE);
                     }
 
-                    @Override
-                    public void onError(String message) {
-                        showToast(message);
-                        end();
-                        finish();
+                    RecyclerView.ViewHolder vh = videoRes.findViewHolderForAdapterPosition(0);
+                    if (vh != null) {
+                        vh.itemView.performClick();
                     }
 
-                    private void end() {
-                        loadingScreen.setVisibility(View.GONE);
-                        loadingImage.pauseAnimation();
-                    }
-                });
-            }
-        }
-
-        private String filterShareText(String shareText) {
-            if (shareText != null) {
-                Pattern pattern = Pattern.compile("(https?://(www\\.|m\\.)?vlive\\.tv/video/([0-9A-Za-z]+))");
-                Matcher matcher = pattern.matcher(shareText);
-                if (matcher.find()) {
-                    return matcher.group(1);
+                    end();
                 }
-            }
-            return null;
-        }
 
-        private boolean isMemoryAvailable(VideoOnDemand.Video video) {
-            // offset 2mb
-            return (video.getSize() + (2L * 1024L * 1024L)) < StorageUtils.getAvailableExternalStorageSize();
-        }
-
-        private void downloadVideo() {
-            if (StorageUtils.isExternalStorageAvailable()) {
-                if (isMemoryAvailable(selectedVOD.videos.get(selectedVideo))) {
-                    Intent intent = new Intent(this, DownloaderService.class);
-                    intent.putExtra(DownloaderService.KEY_SELECTED_VIDEO, selectedVideo);
-                    intent.putExtra(DownloaderService.KEY_SELECTED_CAPTION, selectedCaption);
-                    intent.putExtra(DownloaderService.KEY_VODDATA, selectedVOD);
-                    showToast("Downloading...");
-                    startService(intent);
-                    setBridge();
-                }
-                else {
-                    Toast.makeText(this, "Memory is not enough, please free some memory first.", Toast.LENGTH_LONG).show();
+                @Override
+                public void onError(String message) {
+                    showToast(message);
+                    end();
                     finish();
-                }
-            }
-            else {
-                Toast.makeText(this, "External storage not available.", Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-
-        private void setBridge() {
-            IntentFilter filter = new IntentFilter(SaverBroadcaster.BROADCAST_FILTER_SAVER);
-            dialogScreen.setVisibility(View.GONE);
-            loadingScreen.setVisibility(View.VISIBLE);
-            loadingProgress.setVisibility(View.VISIBLE);
-            loadingImage.playAnimation();
-            broadcaster = new SaverBroadcaster();
-            broadcaster.setListener(new SaverBroadcaster.OnSaverListener() {
-                @Override
-                public void onDownload(int progress, String status) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        loadingProgress.setProgress(progress, true);
-                    }
-                    else {
-                        loadingProgress.setProgress(progress);
-                    }
-
-                    if (status != null && !loadingStatus.getText().equals(status)) {
-                        loadingStatus.setText(status);
-                    }
-                }
-
-                @Override
-                public void onError() {
-                    end();
-                }
-
-                @Override
-                public void onSuccess() {
-                    end();
                 }
 
                 private void end() {
+                    loadingScreen.setVisibility(View.GONE);
                     loadingImage.pauseAnimation();
-                    loadingImage.setImageResource(R.drawable.ic_finger_heart_alt_material);
-                    loadingProgress.setVisibility(View.GONE);
-                    unregisterReceiver(broadcaster);
-                    broadcaster = null;
                 }
             });
-
-            registerReceiver(broadcaster, filter);
         }
+    }
 
-        private void showToast(String message) {
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-
+    private String filterShareText(String shareText) {
+        if (shareText != null) {
+            Pattern pattern = Pattern.compile("(https?://(www\\.|m\\.)?vlive\\.tv/video/([0-9A-Za-z]+))");
+            Matcher matcher = pattern.matcher(shareText);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
         }
+        return null;
+    }
 
-        private static class VideoResAdapter extends RecyclerView.Adapter<VideoResAdapter.VH> {
-            private String cover;
-            private List<VideoOnDemand.Video> listVideo;
+    private boolean isMemoryAvailable(VideoOnDemand.Video video) {
+        // offset 2mb
+        return (video.getSize() + (2L * 1024L * 1024L)) < StorageUtils.getAvailableExternalStorageSize();
+    }
 
-            private int highlightedItem = -1;
+    private void downloadVideo() {
+        if (StorageUtils.isExternalStorageAvailable()) {
+            if (isMemoryAvailable(selectedVOD.videos.get(selectedVideo))) {
+                Intent intent = new Intent(this, DownloaderService.class);
+                intent.putExtra(DownloaderService.KEY_SELECTED_VIDEO, selectedVideo);
+                intent.putExtra(DownloaderService.KEY_SELECTED_CAPTION, selectedCaption);
+                intent.putExtra(DownloaderService.KEY_VODDATA, selectedVOD);
+                showToast("Downloading...");
+                startService(intent);
+                setBridge();
+            }
+            else {
+                Toast.makeText(this, "Memory is not enough, please free some memory first.", Toast.LENGTH_LONG).show();
+                finish();
+            }
+        }
+        else {
+            Toast.makeText(this, "External storage not available.", Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
 
-            private VideoResAdapter(String cover, List<VideoOnDemand.Video> listVideo) {
-                this.cover = cover;
-                this.listVideo = listVideo;
+    private void setBridge() {
+        IntentFilter filter = new IntentFilter(SaverBroadcaster.BROADCAST_FILTER_SAVER);
+        dialogScreen.setVisibility(View.GONE);
+        loadingScreen.setVisibility(View.VISIBLE);
+        loadingProgress.setVisibility(View.VISIBLE);
+        loadingImage.playAnimation();
+        broadcaster = new SaverBroadcaster();
+        broadcaster.setListener(new SaverBroadcaster.OnSaverListener() {
+            @Override
+            public void onDownload(int progress, String status) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    loadingProgress.setProgress(progress, true);
+                }
+                else {
+                    loadingProgress.setProgress(progress);
+                }
+
+                if (status != null && !loadingStatus.getText().equals(status)) {
+                    loadingStatus.setText(status);
+                }
             }
 
-            class VH extends RecyclerView.ViewHolder {
-                private ImageView thumbnail;
-                private TextView resolution;
+            @Override
+            public void onError() {
+                end();
+            }
 
-                private VH(View itemView) {
-                    super(itemView);
-                    // TODO Auto-generated constructor stub
-                    thumbnail = itemView.findViewById(R.id.thumbnail);
-                    resolution = itemView.findViewById(R.id.resolution);
+            @Override
+            public void onSuccess() {
+                end();
+            }
 
-                    itemView.setOnClickListener(new View.OnClickListener() {
+            private void end() {
+                loadingImage.pauseAnimation();
+                loadingImage.setImageResource(R.drawable.ic_finger_heart_alt_material);
+                loadingProgress.setVisibility(View.GONE);
+                unregisterReceiver(broadcaster);
+                broadcaster = null;
+            }
+        });
 
-                        @Override
-                        public void onClick(View v) {
-                            // TODO Auto-generated method stub
-                            highlightedItem = getAdapterPosition();
-                            highlightItem(v, highlightedItem);
-                            notifyDataSetChanged();
-                        }
-                    });
-                }
+        registerReceiver(broadcaster, filter);
+    }
 
-                private void highlightItem(View itemView, int currentItem) {
-                    if (currentItem == highlightedItem) {
-                        itemView.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.rounded_corner_highlight));
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+    }
+
+    private static class VideoResAdapter extends RecyclerView.Adapter<VideoResAdapter.VH> {
+        private String cover;
+        private List<VideoOnDemand.Video> listVideo;
+
+        private int highlightedItem = -1;
+
+        private VideoResAdapter(String cover, List<VideoOnDemand.Video> listVideo) {
+            this.cover = cover;
+            this.listVideo = listVideo;
+        }
+
+        class VH extends RecyclerView.ViewHolder {
+            private ImageView thumbnail;
+            private TextView resolution;
+
+            private VH(View itemView) {
+                super(itemView);
+                // TODO Auto-generated constructor stub
+                thumbnail = itemView.findViewById(R.id.thumbnail);
+                resolution = itemView.findViewById(R.id.resolution);
+
+                itemView.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+                        // TODO Auto-generated method stub
+                        highlightedItem = getAdapterPosition();
+                        highlightItem(v, highlightedItem);
+                        notifyDataSetChanged();
                     }
-                    else {
-                        itemView.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.rounded_corner));
-                    }
-                }
+                });
+            }
 
-                private void setThumbnail(String url) {
-                    Glide.with(itemView.getContext())
-                            .load(url)
-                            .apply(new RequestOptions()
+            private void highlightItem(View itemView, int currentItem) {
+                if (currentItem == highlightedItem) {
+                    itemView.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.rounded_corner_highlight));
+                }
+                else {
+                    itemView.setBackground(ContextCompat.getDrawable(itemView.getContext(), R.drawable.rounded_corner));
+                }
+            }
+
+            private void setThumbnail(String url) {
+                Glide.with(itemView.getContext())
+                        .load(url)
+                        .apply(new RequestOptions()
                                 .centerCrop()
                                 .override(320, 240)
                                 .placeholder(R.drawable.symbol_s)
-                            ).into(thumbnail);
-                }
-
-                private void setResolution(String res) {
-                    resolution.setText(res);
-                }
+                        ).into(thumbnail);
             }
 
-            @NonNull
-            @Override
-            public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                // TODO Auto-generated method stub
-                int resource = R.layout.item_video_saver;
-                View v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
-                return new VH(v);
+            private void setResolution(String res) {
+                resolution.setText(res);
             }
+        }
 
-            @Override
-            public void onBindViewHolder(@NonNull VH holder, int position) {
-                // TODO Auto-generated method stub
-                VideoOnDemand.Video video = getVideo(position);
-                holder.setThumbnail(cover);
-                holder.setResolution(video.getResolution());
-                holder.highlightItem(holder.itemView, position);
-            }
+        @NonNull
+        @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            // TODO Auto-generated method stub
+            int resource = R.layout.item_video_saver;
+            View v = LayoutInflater.from(parent.getContext()).inflate(resource, parent, false);
+            return new VH(v);
+        }
 
-            @Override
-            public int getItemCount() {
-                // TODO Auto-generated method stub
-                return listVideo.size();
-            }
+        @Override
+        public void onBindViewHolder(@NonNull VH holder, int position) {
+            // TODO Auto-generated method stub
+            VideoOnDemand.Video video = getVideo(position);
+            holder.setThumbnail(cover);
+            holder.setResolution(video.getResolution());
+            holder.highlightItem(holder.itemView, position);
+        }
 
-            private VideoOnDemand.Video getVideo(int position) {
-                return listVideo.get(position);
-            }
+        @Override
+        public int getItemCount() {
+            // TODO Auto-generated method stub
+            return listVideo.size();
+        }
+
+        private VideoOnDemand.Video getVideo(int position) {
+            return listVideo.get(position);
         }
     }
 }

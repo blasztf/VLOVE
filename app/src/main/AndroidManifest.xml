@@ -30,12 +30,12 @@
             android:label="@string/pref_group_vlater" />
         <activity android:name=".SettingsActivity"
             android:label="@string/action_settings" />
-        <activity android:name=".ui.dialogs.Popup$Dialog"
+        <activity android:name=".ui.dialogs.Popup"
             android:excludeFromRecents="true"
             android:theme="@style/DialogTheme"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"/>
-        <activity android:name=".ui.dialogs.Saver$Dialog"
+        <activity android:name=".ui.dialogs.Saver"
             android:excludeFromRecents="true"
             android:theme="@style/DialogTheme"
             android:configChanges="orientation|screenSize"
@@ -46,7 +46,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.dialogs.Translator$Dialog"
+        <activity android:name=".ui.dialogs.Translator"
             android:excludeFromRecents="true"
             android:theme="@style/DialogTheme"
             android:configChanges="orientation|screenSize"
