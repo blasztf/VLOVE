@@ -4,21 +4,20 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 
-import com.blaszt.exeater.ExEater;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.navers.vlove.AppSettings;
 import com.navers.vlove.R;
-import com.navers.vlove._.deprecated.features.StorageUtils;
-import com.navers.vlove._.deprecated.features.UtilNetwork;
+import com.navers.vlove.deprecated.features.StorageUtils;
+import com.navers.vlove.deprecated.features.UtilNetwork;
 import com.navers.vlove.broadcasters.SaverBroadcaster;
 import com.navers.vlove.data.helper.VideoOnDemandRetriever;
 import com.navers.vlove.databases.VideoOnDemand;
+import com.navers.vlove.logger.CrashCocoExceptionHandler;
 import com.navers.vlove.ui.helper.NotificationHelper;
 
 import java.io.File;
@@ -199,7 +198,7 @@ public class DownloaderService extends Service {
         @Override
         protected Boolean doInBackground(VideoOnDemandRetriever.Data... data) {
             setData(data[0]);
-
+            CrashCocoExceptionHandler.with("ds").debugLog(getContext().selectedVideo + "");
             if (getContext().selectedVideo >= 0) {
                 FutureTarget<Bitmap> largeIcon = Glide.with(getContext())
                         .asBitmap()
@@ -214,6 +213,7 @@ public class DownloaderService extends Service {
                     e.printStackTrace();
                 }
                 publishProgress(0);
+                CrashCocoExceptionHandler.with("ds").debugLog(getData().videos.get(getContext().selectedVideo).getSource());
                 File video = UtilNetwork.download(getData().videos.get(getContext().selectedVideo).getSource(), getContext().savePath, getData().videos.get(getContext().selectedVideo).getTitle() + ".mp4", new UtilNetwork.Listener() {
 
                     @Override

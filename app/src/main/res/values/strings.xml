@@ -112,9 +112,32 @@
     <string name="pref_title_enable_overlay">Enable Overlay Permission</string>
     <string name="pref_key_download_path">key_saver_dpath</string>
 
-    <!-- Settings for menu V Trans / V Translator -->
+    <!-- Settings for menu V Tras / V Translator -->
     <string name="pref_group_vtrans">V Trans</string>
-
+    <string-array name="pref_locale_lang">
+        <item>KOREAN</item>
+        <item>ENGLISH</item>
+        <item>JAPANESE</item>
+        <item>CHINESE</item>
+        <item>CHINESE TRA.</item>
+        <item>SPANISH</item>
+        <item>FRENCH</item>
+        <item>VIETNAME</item>
+        <item>THAILAND</item>
+        <item>INDONESIA</item>
+    </string-array>
+    <string-array name="pref_locale_code">
+        <item>ko</item>
+        <item>en</item>
+        <item>ja</item>
+        <item>zh-CN</item>
+        <item>zh-TW</item>
+        <item>es</item>
+        <item>fr</item>
+        <item>vi</item>
+        <item>th</item>
+        <item>id</item>
+    </string-array>
 
     <!-- About -->
     <string name="pref_group_about">About</string>

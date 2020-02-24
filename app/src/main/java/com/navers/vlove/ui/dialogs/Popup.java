@@ -51,6 +51,10 @@ public class Popup extends BaseDialog {
         setId(id);
     }
 
+    public Popup() {
+        super();
+    }
+
     @BuilderMethod
     public Popup make(@StringRes int messageId) {
         return make(-1, messageId);

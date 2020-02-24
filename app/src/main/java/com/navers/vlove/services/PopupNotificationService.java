@@ -4,8 +4,10 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
+import android.widget.Toast;
 
 import com.navers.vlove.AppSettings;
 import com.navers.vlove.apis.VAPIS;
@@ -15,10 +17,13 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PopupService extends NotificationListenerService {
+public class PopupNotificationService extends NotificationListenerService {
+
+    Handler mHandler;
 
     @Override
     public void onCreate() {
+        mHandler = new Handler(getApplicationContext().getMainLooper());
         super.onCreate();
     }
 
@@ -34,15 +39,28 @@ public class PopupService extends NotificationListenerService {
                     String text = getMessage(extras);
                     if (text == null) text = "";
 
-                    // Validate channel with white & black list channel
+                     //Validate channel with white & black list channel
                     if (isChannelValid(text)) {
                         PendingIntent intent = sbn.getNotification().contentIntent;
 
-                        Popup.with(this, Popup.ID_WATCH).make(title, text).setAction(intent).show();
+                        showPopup(title, text, intent);
                     }
                 }
             }
         }
+    }
+
+    private void showPopup(final String title, final String text, final PendingIntent intent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Popup.with(getApplicationContext(), Popup.ID_WATCH).make(title, text).setAction(intent).show();
+            }
+        });
+    }
+
+    private void runOnUiThread(Runnable runnable) {
+        mHandler.postDelayed(runnable, 100);
     }
 
     private String getTitle(Bundle notificationExtras) {
@@ -97,6 +115,7 @@ public class PopupService extends NotificationListenerService {
         Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(line.toLowerCase(Locale.US));
         return !m.find();
+//        return true;
     }
 
     private boolean isChannelValid(String message) {

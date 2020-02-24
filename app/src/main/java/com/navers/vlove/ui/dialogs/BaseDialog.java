@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatSpinner;
+
+import com.navers.vlove.R;
+import com.navers.vlove.deprecated.features.WRUtils;
+import com.navers.vlove.logger.CrashCocoExceptionHandler;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -20,14 +26,17 @@ public abstract class BaseDialog extends Activity {
         mContext = new WeakReference<>(context);
         mIntent = new WeakReference<>(new Intent(context, this.getClass()));
         buildContextIntent();
-//        onPrepare(getIntent());
     }
+
+    @Retention(RetentionPolicy.CLASS)
+    @Target(ElementType.TYPE)
+    @interface SingletonMethod {}
 
     @Retention(RetentionPolicy.SOURCE)
     @Target(ElementType.METHOD)
     @interface BuilderMethod {}
 
-    private BaseDialog() {}
+    public BaseDialog() {}
 
 //    protected abstract void onPrepare(Intent intent);
 
@@ -40,6 +49,7 @@ public abstract class BaseDialog extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Thread.setDefaultUncaughtExceptionHandler(new CrashCocoExceptionHandler("vl_bd"));
         setContentView(getContentViewId());
         onPrepareContentViewElement();
         onReady(getIntent());
@@ -59,7 +69,7 @@ public abstract class BaseDialog extends Activity {
      * @return context.
      */
     protected Context getContext() {
-        return mContext != null ? mContext.get() : null;
+        return WRUtils.stillExists(mContext) ? mContext.get() : null;
     }
 
     /**
@@ -74,7 +84,7 @@ public abstract class BaseDialog extends Activity {
 
     @Override
     public Intent getIntent() {
-        return mIntent != null ? mIntent.get() : super.getIntent();
+        return WRUtils.stillExists(mIntent) ? mIntent.get() : super.getIntent();
     }
 
 //    protected Intent getContextIntent() {

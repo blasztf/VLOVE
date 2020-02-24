@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:padding="20dp" >
 
-        <TextView
+        <Spinner
             android:id="@+id/translatorFrom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,7 +22,8 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/color_light_black"
             android:textStyle="bold"
-            android:text="TITLE"
+            android:spinnerMode="dropdown"
+
             style="@style/RobotoMedium" />
 
         <ScrollView
@@ -41,7 +42,7 @@
                 style="@style/RobotoMedium" />
         </ScrollView>
 
-        <TextView
+        <Spinner
             android:id="@+id/translatorTo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,7 +52,6 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/color_light_black"
             android:textStyle="bold"
-            android:text="TITLE"
             style="@style/RobotoMedium" />
 
         <ScrollView

@@ -1,5 +1,6 @@
 package com.navers.vlove.ui.dialogs;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -24,12 +25,19 @@ import android.widget.Toast;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.navers.vlove.R;
-import com.navers.vlove._.deprecated.features.StorageUtils;
+import com.navers.vlove.deprecated.features.StorageUtils;
 import com.navers.vlove.apis.VAPIS;
 import com.navers.vlove.broadcasters.SaverBroadcaster;
 import com.navers.vlove.data.helper.VideoOnDemandRetriever;
 import com.navers.vlove.databases.VideoOnDemand;
+import com.navers.vlove.logger.CrashCocoExceptionHandler;
 import com.navers.vlove.services.DownloaderService;
 import com.navers.vlove.ui.helper.RecyclerViewCompat;
 import com.navers.vlove.views.MenuScreenActivity;
@@ -63,6 +71,10 @@ public class Saver extends BaseDialog implements View.OnClickListener {
         super(context);
     }
 
+    public Saver() {
+        super();
+    }
+
     @BuilderMethod
     private Saver setVideo(String uri) {
         getIntent().putExtra(Saver.VIDEO_URL, uri);
@@ -91,7 +103,27 @@ public class Saver extends BaseDialog implements View.OnClickListener {
     @Override
     protected void onReady(Intent intent) {
         if (!VAPIS.isExpired(this)) {
-            main();
+            Dexter.withActivity(this)
+                    .withPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .withListener(new PermissionListener() {
+                        @Override
+                        public void onPermissionGranted(PermissionGrantedResponse response) {
+                            main();
+                        }
+
+                        @Override
+                        public void onPermissionDenied(PermissionDeniedResponse response) {
+                            onPermissionRationaleShouldBeShown(null, null);
+                        }
+
+                        @Override
+                        public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+                            Popup.with(Saver.this, Popup.ID_INFO)
+                                    .make("Permission Denied", "You must enable Manifest.permission.WRITE_EXTERNAL_STORAGE in order to download the video!")
+                                    .show();
+                        }
+                    })
+                    .check();
         } else {
             startActivity(new Intent(this, MenuScreenActivity.class));
             finish();
@@ -237,6 +269,7 @@ public class Saver extends BaseDialog implements View.OnClickListener {
                 intent.putExtra(DownloaderService.KEY_SELECTED_CAPTION, selectedCaption);
                 intent.putExtra(DownloaderService.KEY_VODDATA, selectedVOD);
                 showToast("Downloading...");
+//                CrashCocoExceptionHandler.with("s").toast(this, selectedVOD.videos.get(selectedVideo).getSource());
                 startService(intent);
                 setBridge();
             }

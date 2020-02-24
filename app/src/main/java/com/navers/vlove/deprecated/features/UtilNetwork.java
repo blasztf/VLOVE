@@ -1,4 +1,6 @@
-package com.navers.vlove._.deprecated.features;
+package com.navers.vlove.deprecated.features;
+
+import com.navers.vlove.logger.CrashCocoExceptionHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

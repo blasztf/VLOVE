@@ -1,4 +1,4 @@
-package com.navers.vlove._.deprecated.features;
+package com.navers.vlove.deprecated.features;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -1,6 +1,8 @@
 package com.navers.vlove.logger;
 
+import android.content.Context;
 import android.os.Environment;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +29,24 @@ public class CrashCocoExceptionHandler implements Thread.UncaughtExceptionHandle
     private final boolean disable = false;
 
     private boolean isErrorSet = false;
+
+    private static CrashCocoExceptionHandler mInstance;
+
+    public static synchronized CrashCocoExceptionHandler with(String id) {
+        if (mInstance == null) {
+
+            mInstance = new CrashCocoExceptionHandler();
+
+        }
+
+        mInstance.id = id;
+
+        return mInstance;
+    }
+
+    private CrashCocoExceptionHandler() {
+
+    }
 
     public CrashCocoExceptionHandler(String id) {
         this.id = id;
@@ -65,6 +85,12 @@ public class CrashCocoExceptionHandler implements Thread.UncaughtExceptionHandle
         }
 
         defaultHandler.uncaughtException(thread, throwable);
+    }
+
+    public void toast(Context ctx, String msg) {
+        if (unlock) {
+            Toast.makeText(ctx, id + " : " + msg, Toast.LENGTH_LONG).show();
+        }
     }
 
     public void debugLog(String msg) {

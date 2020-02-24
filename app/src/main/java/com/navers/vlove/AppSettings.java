@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.view.ContextThemeWrapper;
 
 import com.navers.vlove.services.DownloaderService;
-import com.navers.vlove.services.PopupService;
+import com.navers.vlove.services.PopupNotificationService;
 import com.navers.vlove.services.SaverService;
 import com.navers.vlove.ui.dialogs.Popup;
 import com.navers.vlove.views.BoardScreenActivity;
@@ -129,13 +129,13 @@ public class AppSettings {
 
     private static boolean checkContext(Context context) {
         return context instanceof MenuScreenActivity ||
-                context instanceof PopupService ||
+                context instanceof PopupNotificationService ||
                 context instanceof BoardScreenActivity ||
                 context instanceof LaterScreenActivity ||
                 context instanceof SaverService ||
                 context instanceof SettingsActivity ||
                 context instanceof DownloaderService ||
-                context instanceof Popup.Dialog ||
+                context instanceof Popup ||
                 isContextFromBroadcast(context);
     }
 

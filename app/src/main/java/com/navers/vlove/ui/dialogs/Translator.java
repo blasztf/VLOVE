@@ -3,8 +3,11 @@ package com.navers.vlove.ui.dialogs;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -35,9 +38,13 @@ public class Translator extends BaseDialog {
 
     private static final String EXTRA_POST = Translator.class.getSimpleName() + ".POST:LString";
 
-    private TextView mTranslatorFrom, mTranslatorTo;
+    private Spinner mTranslatorFrom, mTranslatorTo;
     private EditText mTranslatorFromText, mTranslatorToText;
     private Button mTranslatorTranslate;
+
+    private ArrayAdapter<CharSequence> mTranslatorAdapterFrom, mTranslatorAdapterTo;
+
+    private String[] mTranslatorLocaleCode;
 
     private com.navers.vpago.Translator mTranslator;
 
@@ -62,6 +69,10 @@ public class Translator extends BaseDialog {
 
     private Translator(Context context) {
         super(context);
+    }
+
+    public Translator() {
+        super();
     }
 
     @BuilderMethod
@@ -91,6 +102,44 @@ public class Translator extends BaseDialog {
 
     private void main() {
         Thread.setDefaultUncaughtExceptionHandler(new CrashCocoExceptionHandler("vl_tl"));
+
+        mTranslatorLocaleCode = getResources().getStringArray(R.array.pref_locale_code);
+        mTranslatorAdapterFrom = ArrayAdapter.createFromResource(this, R.array.pref_locale_lang, android.R.layout.simple_spinner_item);
+        mTranslatorAdapterFrom.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTranslatorAdapterTo = ArrayAdapter.createFromResource(this, R.array.pref_locale_lang, android.R.layout.simple_spinner_item);
+        mTranslatorAdapterTo.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        mTranslatorFrom.setAdapter(mTranslatorAdapterFrom);
+        mTranslatorTo.setAdapter(mTranslatorAdapterTo);
+
+        mTranslatorFrom.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_light_black));
+                mSourceLocale = new Locale(mTranslatorLocaleCode[pos]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_light_black));
+            }
+        });
+
+        mTranslatorTo.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_light_black));
+                mTargetLocale = new Locale(mTranslatorLocaleCode[pos]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                ((TextView) adapterView.getChildAt(0)).setTextColor(getResources().getColor(R.color.color_light_black));
+            }
+
+        });
 
         mTranslatorTranslate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,15 +174,27 @@ public class Translator extends BaseDialog {
     }
 
     private void setSourceValue(Locale sourceLocale, String sourceValue) {
-        mTranslatorFrom.setText(sourceLocale.toCountryString());
+        mTranslatorFrom.setSelection(getLocaleCodePosition(sourceLocale), true);
+
         mTranslatorFromText.setText(sourceValue);
         mSourceLocale = sourceLocale;
     }
 
     private void setTargetValue(Locale targetLocale, String targetValue) {
-        mTranslatorTo.setText(targetLocale.toCountryString());
+        mTranslatorTo.setSelection(getLocaleCodePosition(targetLocale), true);
+
         mTranslatorToText.setText(targetValue);
         mTargetLocale = targetLocale;
+    }
+
+    private int getLocaleCodePosition(Locale locale) {
+        for (int i = 0; i < mTranslatorLocaleCode.length; i++) {
+            if (locale.equals(new Locale(mTranslatorLocaleCode[i]))) {
+                return i;
+            }
+        }
+
+        return 0;  //-1;
     }
 
     /**

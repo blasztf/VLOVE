@@ -14,15 +14,15 @@
             android:title="@string/pref_title_is_vibrate" />
         <EditTextPreference
             android:defaultValue=""
-            android:key="@string/pref_title_whitelist_channel"
+            android:key="@string/pref_key_whitelist_channel"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/pref_key_whitelist_channel" />
+            android:title="@string/pref_title_whitelist_channel" />
         <EditTextPreference
             android:defaultValue=""
-            android:key="@string/pref_title_blacklist_channel"
+            android:key="@string/pref_key_blacklist_channel"
             android:selectAllOnFocus="true"
             android:singleLine="true"
-            android:title="@string/pref_key_blacklist_channel" />
+            android:title="@string/pref_title_blacklist_channel" />
     </PreferenceCategory>
 </PreferenceScreen>
