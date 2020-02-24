@@ -1,5 +1,6 @@
 package com.navers.vlove.ui.dialogs;
 
+import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -107,18 +108,25 @@ public class Popup extends BaseDialog {
 
     @Override
     protected void onReady(Intent intent) {
-        int id = intent.getIntExtra(EXTRA_ID, -1);
-        String title = intent.getStringExtra(EXTRA_TITLE);
-        String message = intent.getStringExtra(EXTRA_MESSAGE);
-        PendingIntent action = intent.getParcelableExtra(EXTRA_ACTION);
-        if (action == null) action = determineAction(title);
+        // Show popup notification (force user to see the notification [mwahahahahahaha]).
+        if (isScreenLocked()) {
+            int id = intent.getIntExtra(EXTRA_ID, -1);
+            String title = intent.getStringExtra(EXTRA_TITLE);
+            String message = intent.getStringExtra(EXTRA_MESSAGE);
+            PendingIntent action = intent.getParcelableExtra(EXTRA_ACTION);
+            if (action == null) action = determineAction(title);
 
-        setContentText(id, title, message);
-        setContentAction(action);
+            setContentText(id, title, message);
+            setContentAction(action);
 
-        setFinishOnTouchOutside(false);
-        wakeLock();
-        enableVibrate();
+            setFinishOnTouchOutside(false);
+            wakeLock();
+            enableVibrate();
+        }
+        // Nah.
+        else {
+            finish();
+        }
     }
 
     @Override
@@ -213,12 +221,17 @@ public class Popup extends BaseDialog {
         if (AppSettings.getInstance(this).isPopupUseVibrate() && mVibrator != null && mVibrator.hasVibrator()) mVibrator.cancel();
     }
 
+    private boolean isScreenLocked() {
+        KeyguardManager kgManager = (KeyguardManager) getContext().getSystemService(Context.KEYGUARD_SERVICE);
+        return kgManager.isKeyguardLocked();
+    }
+
     private void wakeLock() {
         getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY);
         getWindow().addFlags(
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+//                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
         );
     }
