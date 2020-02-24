@@ -9,10 +9,12 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.navers.vlove.AppSettings;
 import com.navers.vlove.R;
@@ -108,11 +110,12 @@ public class Popup extends BaseDialog {
 
     @Override
     protected void onReady(Intent intent) {
+        int id = intent.getIntExtra(EXTRA_ID, -1);
+        String title = intent.getStringExtra(EXTRA_TITLE);
+        String message = intent.getStringExtra(EXTRA_MESSAGE);
+
         // Show popup notification (force user to see the notification [mwahahahahahaha]).
         if (isScreenLocked()) {
-            int id = intent.getIntExtra(EXTRA_ID, -1);
-            String title = intent.getStringExtra(EXTRA_TITLE);
-            String message = intent.getStringExtra(EXTRA_MESSAGE);
             PendingIntent action = intent.getParcelableExtra(EXTRA_ACTION);
             if (action == null) action = determineAction(title);
 
@@ -123,8 +126,9 @@ public class Popup extends BaseDialog {
             wakeLock();
             enableVibrate();
         }
-        // Nah.
+        // Toast that information to user.
         else {
+            toastContent(title, message);
             finish();
         }
     }
@@ -132,8 +136,17 @@ public class Popup extends BaseDialog {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         disableVibrate();
+    }
+
+    private void toastContent(String title, String message) {
+        Toast toast = Toast.makeText(getContext(), title, Toast.LENGTH_SHORT);
+        View toastView = toast.getView();
+        toastView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_light_blue));
+        toast.show();
+
+        toast.setText(message);
+        toast.show();
     }
 
     private void setContentText(int id, String title, String message) {
