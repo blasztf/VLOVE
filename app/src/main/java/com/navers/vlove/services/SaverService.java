@@ -78,7 +78,7 @@ public class SaverService extends Service implements ClipboardManager.OnPrimaryC
         // TODO Auto-generated method stub
         if (mClipboardManager.hasPrimaryClip()) {
             ClipData cData = mClipboardManager.getPrimaryClip();
-            String clip = cData.getItemAt(0).getText().toString();
+            String clip = cData != null ? cData.getItemAt(0).getText().toString() : "empty";
             if (clip.contains("vlive")) {
                 newDownloadVideo(clip);
             }
@@ -89,14 +89,14 @@ public class SaverService extends Service implements ClipboardManager.OnPrimaryC
     private void enableBubbleIcon() {
         mBubble = new ImageView(this);
 
-        //a face floating bubble as imageView
+        /* a face floating bubble as imageView */
         mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         Point size = new Point();
         mWindowManager.getDefaultDisplay().getSize(size);
 
         mBubble.setImageResource(R.mipmap.ic_launcher_round);
-        //here is all the science of params
-        @SuppressWarnings("deprecation") final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+        /* here is all the science of params */
+        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
@@ -105,17 +105,13 @@ public class SaverService extends Service implements ClipboardManager.OnPrimaryC
         params.gravity = Gravity.TOP | Gravity.START;
         params.x = size.x;
         params.y = 0;
-        // add a floatingfacebubble icon in window
+        /* add a floatingfacebubble icon in window */
         mWindowManager.addView(mBubble, params);
         try {
-            mBubble.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    // TODO Auto-generated method stub
-                    Toast.makeText(SaverService.this, getString(R.string.saver_has_been_stopped), Toast.LENGTH_SHORT).show();
-                    stopSelf();
-                }
+            mBubble.setOnClickListener(view -> {
+                // TODO Auto-generated method stub
+                Toast.makeText(SaverService.this, getString(R.string.saver_has_been_stopped), Toast.LENGTH_SHORT).show();
+                stopSelf();
             });
 
             //for moving the picture on touch and slide

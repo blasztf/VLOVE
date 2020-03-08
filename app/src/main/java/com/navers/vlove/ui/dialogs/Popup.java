@@ -4,6 +4,7 @@ import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
@@ -140,12 +141,9 @@ public class Popup extends BaseDialog {
     }
 
     private void toastContent(String title, String message) {
-        Toast toast = Toast.makeText(getContext(), title, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(this,  title + "\n" + message, Toast.LENGTH_SHORT);
         View toastView = toast.getView();
-        toastView.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.color_light_blue));
-        toast.show();
-
-        toast.setText(message);
+        toastView.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.color_light_blue), PorterDuff.Mode.SRC_IN);
         toast.show();
     }
 
@@ -179,16 +177,15 @@ public class Popup extends BaseDialog {
     }
 
     private void setContentAction(final PendingIntent action) {
-        View.OnClickListener onClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.positive:
-                        start(action);
-                        break;
-                }
-                finish();
+        View.OnClickListener onClickListener = view -> {
+            switch (view.getId()) {
+                case R.id.positive:
+                    Popup.this.start(action);
+                    break;
+                case R.id.negative:
+                    break;
             }
+            Popup.this.finish();
         };
 
         mPositive.setOnClickListener(onClickListener);
@@ -235,8 +232,8 @@ public class Popup extends BaseDialog {
     }
 
     private boolean isScreenLocked() {
-        KeyguardManager kgManager = (KeyguardManager) getContext().getSystemService(Context.KEYGUARD_SERVICE);
-        return kgManager.isKeyguardLocked();
+        KeyguardManager kgManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        return kgManager != null && kgManager.isKeyguardLocked();
     }
 
     private void wakeLock() {

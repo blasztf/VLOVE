@@ -15,7 +15,6 @@ import com.navers.vlove.Action;
 import com.navers.vlove.R;
 import com.navers.vlove.VolleyRequest;
 import com.navers.vlove.apis.VAPIS;
-import com.navers.vlove.logger.CrashCocoExceptionHandler;
 import com.navers.vlove.ui.dialogs.Popup;
 import com.navers.vpago.Locale;
 import com.navers.vpago.Translator;

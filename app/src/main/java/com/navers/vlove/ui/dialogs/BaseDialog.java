@@ -49,7 +49,9 @@ public abstract class BaseDialog extends Activity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        Thread.setDefaultUncaughtExceptionHandler(new CrashCocoExceptionHandler("vl_bd"));
+
+        Thread.setDefaultUncaughtExceptionHandler(new CrashCocoExceptionHandler("vl_bd"));
+
         setContentView(getContentViewId());
         onPrepareContentViewElement();
         onReady(getIntent());

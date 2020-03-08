@@ -144,6 +144,13 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
                 openSettings();
             }
         });
+        listMenu.add(new MenuItemModel("Test Popup", View.class) {
+            @Override
+            public void onAction(boolean state) {
+                super.onAction(state);
+                Popup.with(MenuScreenActivity.this, Popup.ID_INFO).make("Judul", "Konten").show();
+            }
+        });
 
         return listMenu;
     }

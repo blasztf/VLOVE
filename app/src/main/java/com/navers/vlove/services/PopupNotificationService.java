@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.widget.Toast;
 
 import com.navers.vlove.AppSettings;
 import com.navers.vlove.apis.VAPIS;
@@ -51,12 +50,7 @@ public class PopupNotificationService extends NotificationListenerService {
     }
 
     private void showPopup(final String title, final String text, final PendingIntent intent) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Popup.with(getApplicationContext(), Popup.ID_WATCH).make(title, text).setAction(intent).show();
-            }
-        });
+        runOnUiThread(() -> Popup.with(this, Popup.ID_WATCH).make(title, text).setAction(intent).show());
     }
 
     private void runOnUiThread(Runnable runnable) {
