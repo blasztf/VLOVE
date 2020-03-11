@@ -3,7 +3,7 @@ package com.navers.vlove.models;
 import com.navers.vlove.databases.VideoOnDemand;
 import com.navers.vlove.presenters.LaterItemPresenter;
 
-public class LaterItemModel implements ItemModel {
+public class LaterItemModel extends ItemModelAbs {
     public static final int TYPE = 4;
 
     private VideoOnDemand.Video mVideo;

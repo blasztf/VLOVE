@@ -2,7 +2,7 @@ package com.navers.vlove.models;
 
 import com.navers.vlove.presenters.BoardHeaderPresenter;
 
-public class BoardHeaderModel implements ItemModel {
+public class BoardHeaderModel extends ItemModelAbs {
     public static final int TYPE = 1;
 
     private String mUserNickname;

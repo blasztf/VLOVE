@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.navers.vlove.R;
 import com.navers.vlove.databases.VideoOnDemand;
-import com.navers.vlove.models.ItemModel;
+import com.navers.vlove.models.ItemModelAbs;
 import com.navers.vlove.models.LaterHeaderModel;
 import com.navers.vlove.models.LaterItemModel;
 import com.navers.vlove.presenters.LaterHeaderPresenter;
@@ -50,8 +50,8 @@ public class LaterScreenActivity extends AppCompatActivity implements Screen {
     }
 
     @Override
-    public ArrayList<ItemModel> getItems() {
-        ArrayList<ItemModel> listItems = new ArrayList<>();
+    public ArrayList<ItemModelAbs> getItems() {
+        ArrayList<ItemModelAbs> listItems = new ArrayList<>();
 
         listItems.add(getLaterHeader());
         listItems.addAll(getLaterItems());

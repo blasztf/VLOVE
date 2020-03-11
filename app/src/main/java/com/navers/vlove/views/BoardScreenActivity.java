@@ -23,7 +23,7 @@ import com.navers.vlove.databases.Board;
 import com.navers.vlove.logger.CrashCocoExceptionHandler;
 import com.navers.vlove.models.BoardHeaderModel;
 import com.navers.vlove.models.BoardItemModel;
-import com.navers.vlove.models.ItemModel;
+import com.navers.vlove.models.ItemModelAbs;
 import com.navers.vlove.presenters.BoardHeaderPresenter;
 import com.navers.vlove.presenters.BoardItemPresenter;
 import com.navers.vlove.presenters.PresenterAdapter;
@@ -70,8 +70,8 @@ public class BoardScreenActivity extends AppCompatActivity implements Screen {
     }
 
     @Override
-    public ArrayList<ItemModel> getItems() {
-        ArrayList<ItemModel> listItems = new ArrayList<>();
+    public ArrayList<ItemModelAbs> getItems() {
+        ArrayList<ItemModelAbs> listItems = new ArrayList<>();
 
         listItems.add(getBoardHeader());
         listItems.addAll(getBoardItems());

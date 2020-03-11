@@ -2,7 +2,7 @@ package com.navers.vlove.models;
 
 import android.support.annotation.NonNull;
 
-public class SimpleModel implements ItemModel {
+public class SimpleModel extends ItemModelAbs {
     public static final int TYPE = 0;
 
     @NonNull

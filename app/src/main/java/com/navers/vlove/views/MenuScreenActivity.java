@@ -28,7 +28,7 @@ import com.navers.vlove.AppSettings;
 import com.navers.vlove.R;
 import com.navers.vlove.SettingsActivity;
 import com.navers.vlove.apis.VAPIS;
-import com.navers.vlove.models.ItemModel;
+import com.navers.vlove.models.ItemModelAbs;
 import com.navers.vlove.models.MenuItemModel;
 import com.navers.vlove.presenters.MenuItemPresenter;
 import com.navers.vlove.presenters.PresenterAdapter;
@@ -84,7 +84,7 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
     }
 
     @Override
-    public ArrayList<ItemModel> getItems() {
+    public ArrayList<ItemModelAbs> getItems() {
         return getListMenu();
     }
 
@@ -99,8 +99,8 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
         }
     }
 
-    private ArrayList<ItemModel> getListMenu() {
-        ArrayList<ItemModel> listMenu = new ArrayList<>();
+    private ArrayList<ItemModelAbs> getListMenu() {
+        ArrayList<ItemModelAbs> listMenu = new ArrayList<>();
 
         listMenu.add(new MenuItemModel(getString(R.string.pref_group_vpopup), View.class) {
             @Override
@@ -108,35 +108,35 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
                 super.onAction(state);
                 openPopup();
             }
-        });
+        }.tooltip(getString(R.string.tooltip_v_popup)));
         listMenu.add(new MenuItemModel(getString(R.string.pref_group_vboard), ImageView.class) {
             @Override
             public void onAction(boolean state) {
                 super.onAction(state);
                 openBoard();
             }
-        });
+        }.tooltip(getString(R.string.tooltip_v_board)));
         listMenu.add(new MenuItemModel(getString(R.string.pref_group_vlater), ImageView.class) {
             @Override
             public void onAction(boolean state) {
                 super.onAction(state);
                 openLater();
             }
-        });
+        }.tooltip(getString(R.string.tooltip_v_later)));
         listMenu.add(new MenuItemModel(getString(R.string.pref_group_vsaver), Button.class, getString(R.string.btntxt_start)) {
             @Override
             public void onAction(boolean state) {
                 super.onAction(state);
                 openSaver();
             }
-        });
+        }.tooltip(getString(R.string.tooltip_v_saver)));
         listMenu.add(new MenuItemModel(getString(R.string.pref_group_vtrans), View.class) {
             @Override
             public void onAction(boolean state) {
                 super.onAction(state);
                 openTrans();
             }
-        });
+        }.tooltip(getString(R.string.tooltip_v_trans)));
         listMenu.add(new MenuItemModel(getString(R.string.action_settings), ImageView.class) {
             @Override
             public void onAction(boolean state) {

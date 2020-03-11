@@ -3,7 +3,7 @@ package com.navers.vlove.models;
 import com.navers.vlove.databases.Board;
 import com.navers.vlove.presenters.BoardItemPresenter;
 
-public class BoardItemModel implements ItemModel {
+public class BoardItemModel extends ItemModelAbs {
     public static final int TYPE = 2;
     private static final String STICKER_SOURCE = "http://v.phinf.naver.net/";
 

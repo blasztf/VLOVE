@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.navers.vlove.presenters.MenuItemPresenter;
 
-public class MenuItemModel implements ItemModel, MenuItemPresenter.OnActionListener {
+public class MenuItemModel extends ItemModelAbs implements MenuItemPresenter.OnActionListener {
     public static final int TYPE = 0;
 
     private String mTitle;

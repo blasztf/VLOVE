@@ -112,7 +112,7 @@
     <string name="pref_title_enable_overlay">Enable Overlay Permission</string>
     <string name="pref_key_download_path">key_saver_dpath</string>
 
-    <!-- Settings for menu V Tras / V Translator -->
+    <!-- Settings for menu V Trans / V Translator -->
     <string name="pref_group_vtrans">V Trans</string>
     <string-array name="pref_locale_lang">
         <item>KOREAN</item>
@@ -142,6 +142,13 @@
     <!-- About -->
     <string name="pref_group_about">About</string>
     <string name="pref_title_version">Version</string>
+
+    <!-- Tooltips -->
+    <string name="tooltip_v_popup">This feature will enable popup notification for V Live</string>
+    <string name="tooltip_v_board">This feature will sync up to 5 post in Fanboard</string>
+    <string name="tooltip_v_later">This feature will play video that you saved with V Saver</string>
+    <string name="tooltip_v_saver">This feature will start video saver service (can be use from "Share" option on video you want)</string>
+    <string name="tooltip_v_trans">This feature will translate fanboard post (can be use from "Share" option on post you want)</string>
 
     <string name="post_user_image_description">Post user image.</string>
     <string name="latest_comment_user_image_description">Latest comment user image.</string>

@@ -2,16 +2,19 @@ package com.navers.vlove.presenters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.TooltipCompat;
 import android.util.SparseArray;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.navers.vlove.models.ItemModel;
+import com.navers.vlove.models.ItemModelAbs;
 
 import java.util.ArrayList;
 
 public class PresenterAdapter extends RecyclerView.Adapter {
     @NonNull
-    private final ArrayList<ItemModel> mItems = new ArrayList<>();
+    private final ArrayList<ItemModelAbs> mItems = new ArrayList<>();
 
     @NonNull
     private final SparseArray<Presenter> mPresenters = new SparseArray<>();
@@ -31,10 +34,11 @@ public class PresenterAdapter extends RecyclerView.Adapter {
     @SuppressWarnings("unchecked")
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        final ItemModel item = getItem(position);
+        final ItemModelAbs item = getItem(position);
         final Presenter presenter = mPresenters.get(item.getType());
         if (presenter != null) {
             presenter.bindView(item, holder);
+            shouldAddTooltip(item, holder.itemView);
         }
         else {
             throw new RuntimeException("Not supported View Holder: " + holder);
@@ -62,20 +66,26 @@ public class PresenterAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public void setItems(@NonNull final ArrayList<ItemModel> items) {
+    public void setItems(@NonNull final ArrayList<ItemModelAbs> items) {
         mItems.clear();
         mItems.addAll(items);
     }
 
-    public void addItem(@NonNull final ItemModel item) {
+    public void addItem(@NonNull final ItemModelAbs item) {
         mItems.add(item);
     }
 
-    public void removeItem(@NonNull final ItemModel item) {
+    public void removeItem(@NonNull final ItemModelAbs item) {
         mItems.remove(item);
     }
 
-    private ItemModel getItem(final int position) {
+    private ItemModelAbs getItem(final int position) {
         return mItems.get(position);
+    }
+
+    private void shouldAddTooltip(ItemModelAbs item, View view) {
+        if (item.isTooltipEnabled()) {
+            TooltipCompat.setTooltipText(view, item.getTooltip());
+        }
     }
 }

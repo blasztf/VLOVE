@@ -1,6 +1,6 @@
 package com.navers.vlove.models;
 
-public class LaterHeaderModel implements ItemModel {
+public class LaterHeaderModel extends ItemModelAbs {
     public static final int TYPE = 3;
 
     @Override
