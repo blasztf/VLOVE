@@ -9,7 +9,7 @@ import javax.crypto.spec.SecretKeySpec;
 class generator {
     private static generator mInstance;
 
-    static String generate(String encrypted, String key) {
+    static synchronized String generate(String encrypted, String key) {
         if (mInstance == null) {
             mInstance = new generator();
         }
