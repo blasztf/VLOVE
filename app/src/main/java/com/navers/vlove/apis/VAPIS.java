@@ -1,6 +1,7 @@
 package com.navers.vlove.apis;
 
 import android.content.Context;
+import android.content.pm.PackageInfo;
 
 import java.lang.ref.WeakReference;
 
@@ -20,7 +21,11 @@ public final class VAPIS {
     }
 
     private VAPIS(Context context) {
+        if (!isValid(context)) throw new OutsiderException(context);
+    }
 
+    private boolean isValid(Context context) {
+        return "com.navers.vlove".equals(context.getPackageName().substring(0, 16));
     }
 
     private boolean isExpired() {
@@ -77,5 +82,11 @@ public final class VAPIS {
 
     private void setAPIVideoInfo() {
         mAPIVideoInfo = generator.generate(strings.APIVideoInfo, strings.APIKey);
+    }
+
+    private class OutsiderException extends RuntimeException {
+        public OutsiderException(Context context) {
+            super("Who r u? " + context.getPackageName());
+        }
     }
 }

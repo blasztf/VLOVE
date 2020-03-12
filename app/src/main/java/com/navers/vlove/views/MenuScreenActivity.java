@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,7 +36,7 @@ import com.navers.vlove.ui.dialogs.Popup;
 
 import java.util.ArrayList;
 
-public class MenuScreenActivity extends AppCompatActivity implements Screen {
+public class MenuScreenActivity extends ScreenAbs {
     private PresenterAdapter mAdapter;
 
     @Override
@@ -231,6 +230,13 @@ public class MenuScreenActivity extends AppCompatActivity implements Screen {
         Intent intent = new Intent(MenuScreenActivity.this, SettingsActivity.class);
         intent.putExtra(SettingsActivity.EXTRA_SHOW_INIT_FRAGMENT, true);
         startActivity(intent);
+    }
+
+    private void showNewVersionAlert() {
+        Toast.makeText(this, "There is newer version of this app!", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Check at : https://github.com/doodlyz/VLOVE", Toast.LENGTH_LONG).show();
+
+        finish();
     }
 
     private void showExpiredAlert() {

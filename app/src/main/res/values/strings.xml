@@ -150,6 +150,9 @@
     <string name="tooltip_v_saver">This feature will start video saver service (can be use from "Share" option on video you want)</string>
     <string name="tooltip_v_trans">This feature will translate fanboard post (can be use from "Share" option on post you want)</string>
 
+    <string name="alert_new_version_title">UPDATE</string>
+    <string name="alert_new_version_message">There is a new version available!</string>
+
     <string name="post_user_image_description">Post user image.</string>
     <string name="latest_comment_user_image_description">Latest comment user image.</string>
     <string name="latest_comment_sticker_description">Latest comment sticker.</string>
