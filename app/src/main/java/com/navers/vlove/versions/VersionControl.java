@@ -33,7 +33,8 @@ public final class VersionControl {
     }
 
     private static boolean isPackageValid(Context context) {
-        return "com.navers.vlove".equals(context.getPackageName().substring(0, 16));
+        return true;
+//        return "com.navers.vlove".equals(context.getApplicationContext().getPackageName().substring(0, 17));
     }
 
     private static VersionControlImpl validateContext(Context context) {

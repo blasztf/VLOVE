@@ -27,6 +27,7 @@ import com.navers.vlove.AppSettings;
 import com.navers.vlove.R;
 import com.navers.vlove.SettingsActivity;
 import com.navers.vlove.apis.VAPIS;
+import com.navers.vlove.logger.CrashCocoExceptionHandler;
 import com.navers.vlove.models.ItemModelAbs;
 import com.navers.vlove.models.MenuItemModel;
 import com.navers.vlove.presenters.MenuItemPresenter;
