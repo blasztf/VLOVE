@@ -30,7 +30,8 @@
         android:inputType="textUri"
         android:textColor="@color/black_opa50"
         android:textColorHint="@color/black_opa05"
-        tools:text="Post Link">
+        tools:text="Post Link"
+        android:importantForAutofill="no">
 
         <requestFocus />
     </EditText>

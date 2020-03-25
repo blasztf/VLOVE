@@ -7,7 +7,7 @@
             android:title="@string/pref_title_enable_overlay" >
             <intent
                 android:action="android.settings.action.MANAGE_OVERLAY_PERMISSION"
-                android:data="package:com.navers.vlove" />
+                android:data="package:com.doodlyz.vlove" />
         </Preference>
         <ListPreference
             android:defaultValue="1"

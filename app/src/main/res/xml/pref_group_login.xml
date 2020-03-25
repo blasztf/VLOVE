@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="@string/pref_group_login"
+        android:layout="@layout/category_preference" >
+
+        <EditTextPreference
+            android:defaultValue=""
+            android:key="@string/pref_key_vpdid"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_title_vlive_plus_device_id" />
+    </PreferenceCategory>
+</PreferenceScreen>

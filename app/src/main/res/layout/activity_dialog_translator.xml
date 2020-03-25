@@ -39,6 +39,7 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/color_text"
                 android:background="@android:color/transparent"
+                android:importantForAutofill="no"
                 style="@style/RobotoMedium" />
         </ScrollView>
 
@@ -67,7 +68,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/color_text"
                 android:background="@android:color/transparent"
-                style="@style/RobotoMedium" />
+                style="@style/RobotoMedium"
+                android:importantForAutofill="no" />
         </ScrollView>
 
     </LinearLayout>

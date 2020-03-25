@@ -18,7 +18,7 @@
             android:lineSpacingExtra="1.5dip"
             android:text="@string/later_download_video_list"
             android:textColor="#ff464658"
-            android:textSize="18.0dip" />
+            android:textSize="18.0sp" />
 
         <View
             android:layout_width="match_parent"
@@ -37,6 +37,6 @@
         android:lineSpacingExtra="1.0dip"
         android:text="@string/later_offline_note"
         android:textColor="@color/black_opa50"
-        android:textSize="13.0dip" />
+        android:textSize="13.0sp" />
 
 </LinearLayout>

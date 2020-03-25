@@ -3,7 +3,7 @@
     <PreferenceCategory android:title="@string/pref_group_about"
         android:layout="@layout/category_preference" >
 
-        <com.navers.vlove.settings.preferences.VersionPreference
+        <com.doodlyz.vlove.settings.preferences.VersionPreference
             android:title="@string/pref_title_version" />
     </PreferenceCategory>
 </PreferenceScreen>

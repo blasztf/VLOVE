@@ -35,6 +35,7 @@
 
     <style name="DialogTheme" parent="@android:style/Theme.Holo.Dialog.NoActionBar.MinWidth">
         <item name="android:textColorPrimary">@color/color_light_black_alt</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
 </resources>

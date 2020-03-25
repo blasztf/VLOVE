@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.navers.vlove">
+    package="com.doodlyz.vlove">
 
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -15,53 +16,73 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".views.MenuScreenActivity"
+
+        <activity
+            android:name=".views.MenuScreenActivity"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".views.BoardScreenActivity"
+        <activity
+            android:name=".views.BoardScreenActivity"
             android:label="@string/pref_group_vboard" />
-        <activity android:name=".views.LaterScreenActivity"
+        <activity
+            android:name=".views.LaterScreenActivity"
             android:label="@string/pref_group_vlater" />
-        <activity android:name=".SettingsActivity"
+        <activity
+            android:name=".SettingsActivity"
             android:label="@string/action_settings" />
-        <activity android:name=".ui.dialogs.Popup"
-            android:excludeFromRecents="true"
-            android:theme="@style/DialogTheme"
+        <activity
+            android:name=".ui.dialogs.PopupAct"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".ui.dialogs.Saver"
             android:excludeFromRecents="true"
-            android:theme="@style/DialogTheme"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogTheme" />
+        <activity
+            android:name=".ui.dialogs.SaverAct"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait">
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogTheme">
             <intent-filter android:label="@string/share_save_video">
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.dialogs.Translator"
-            android:excludeFromRecents="true"
-            android:theme="@style/DialogTheme"
+        <activity
+            android:name=".ui.dialogs.TranslatorAct"
             android:configChanges="orientation|screenSize"
-            android:screenOrientation="portrait">
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogTheme">
             <intent-filter android:label="@string/share_translate_text">
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.dialogs.LoginAct"
+            android:configChanges="orientation|screenSize"
+            android:excludeFromRecents="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogTheme" />
 
-        <service android:name=".services.PopupNotificationService"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE" >
-            <intent-filter >
-                <action android:name="android.service.notification.NotificationListenerService"/>
+        <service
+            android:name=".services.PopupNotificationService"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
         <service android:name=".services.SaverService" />
@@ -72,11 +93,11 @@
         <receiver android:name=".broadcasters.BoardBroadcasters">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="com.navers.vlove.action.BOARD_SYNC" />
-                <action android:name="com.navers.vlove.action.BOARD_SYNC_CANCEL" />
+                <action android:name="com.doodlyz.vlove.action.BOARD_SYNC" />
+                <action android:name="com.doodlyz.vlove.action.BOARD_SYNC_CANCEL" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.navers.vlove.action.BOARD_TEST" />
+                <action android:name="com.doodlyz.vlove.action.BOARD_TEST" />
             </intent-filter>
         </receiver>
     </application>

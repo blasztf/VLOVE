@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android">
     <header android:title="@string/pref_group_vpopup"
-        android:fragment="com.navers.vlove.SettingsActivity$PopupFragment" />
+        android:fragment="com.doodlyz.vlove.SettingsActivity$PopupFragment" />
     <header android:title="@string/pref_group_vboard"
-        android:fragment="com.navers.vlove.SettingsActivity$BoardFragment" />
+        android:fragment="com.doodlyz.vlove.SettingsActivity$BoardFragment" />
     <header android:title="@string/pref_group_vlater"
-        android:fragment="com.navers.vlove.SettingsActivity$LaterFragment" />
+        android:fragment="com.doodlyz.vlove.SettingsActivity$LaterFragment" />
     <header android:title="@string/pref_group_vsaver"
-        android:fragment="com.navers.vlove.SettingsActivity$SaverFragment" />
+        android:fragment="com.doodlyz.vlove.SettingsActivity$SaverFragment" />
     <header android:title="@string/pref_group_about"
-        android:fragment="com.navers.vlove.SettingsActivity$AboutFragment" />
+        android:fragment="com.doodlyz.vlove.SettingsActivity$AboutFragment" />
 </preference-headers>
