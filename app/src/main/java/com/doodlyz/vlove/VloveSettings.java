@@ -1,6 +1,5 @@
 package com.doodlyz.vlove;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
@@ -23,11 +22,11 @@ import com.doodlyz.vlove.views.BoardScreenActivity;
 import com.doodlyz.vlove.views.LaterScreenActivity;
 import com.doodlyz.vlove.views.MenuScreenActivity;
 
-import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.Set;
 
-public class AppSettings {
-    private static AppSettings mInstance;
+public class VloveSettings {
+    private static VloveSettings mInstance;
 
     private static String KEY_POPUP_VIBRATE;
     private static String KEY_POPUP_WCHANNEL;
@@ -38,20 +37,22 @@ public class AppSettings {
     private static String KEY_LINFO_TEXT;
     private static String KEY_LINFO_VPDID;
 
-    private WeakReference<Context> mContext;
+    private Context mContext;
     private SharedPreferences mSharedPreferences;
 
-    public static final String VLOVE_USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:61.0) Gecko/20100101 Firefox/61.0";
+    public static final String VLOVE_USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0";
+    public static final String APIS_NAVER_HOST = "global.apis.naver.com";
+    public static final String VLIVE_HOST = "www.vlive.tv";
 
-    private AppSettings(Context context) {
-        mContext = new WeakReference<>(context.getApplicationContext());
-        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(mContext.get());
+    private VloveSettings(Context context) {
+        mContext = context.getApplicationContext();
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         setAllKey();
     }
 
     private Context getContext() {
-        return mContext.get();
+        return mContext;
     }
 
     private void setAllKey() {
@@ -65,11 +66,11 @@ public class AppSettings {
         KEY_LINFO_VPDID = getContext().getString(R.string.pref_key_vpdid);
     }
 
-    public static synchronized AppSettings getInstance(Context context) {
+    public static synchronized VloveSettings getInstance(Context context) {
         boolean contextValid = checkContext(context);
         if (contextValid) {
             if (mInstance == null || mInstance.getContext() == null) {
-                mInstance = new AppSettings(context);
+                mInstance = new VloveSettings(context);
             }
             return mInstance;
         }
@@ -107,7 +108,7 @@ public class AppSettings {
     }
 
     public String getSaverDownloadPath() {
-        return mSharedPreferences.getString(KEY_SAVER_DPATH, "1").equals("0") ? getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES).getAbsolutePath() : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
+        return mSharedPreferences.getString(KEY_SAVER_DPATH, "1").equals("0") ? Objects.requireNonNull(getContext().getExternalFilesDir(Environment.DIRECTORY_MOVIES)).getAbsolutePath() : Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
     }
 
     public String getVLivePlusDeviceId() {
@@ -119,7 +120,7 @@ public class AppSettings {
     }
 
     public Login.LoginInfo getLoginInfo() {
-        String loginInfoText = mSharedPreferences.getString(KEY_LINFO_TEXT, "");
+        String loginInfoText = mSharedPreferences.getString(KEY_LINFO_TEXT, "").trim();
         return !loginInfoText.isEmpty() ? new Login.LoginInfo(loginInfoText) : null;
     }
 
@@ -168,8 +169,7 @@ public class AppSettings {
     }
 
     private static boolean isContextFromBroadcast(Context context) {
-        return !(context instanceof Activity) &&
-                !(context instanceof Service) &&
+        return !(context instanceof Service) &&
                 !(context instanceof Application) &&
                 !(context instanceof ContextThemeWrapper) &&
                 context instanceof ContextWrapper;

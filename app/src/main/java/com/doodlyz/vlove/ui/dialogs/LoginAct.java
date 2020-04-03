@@ -13,9 +13,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.RelativeLayout;
 
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveRequest;
+import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
 
 import java.util.Objects;
 
@@ -85,23 +86,23 @@ public final class LoginAct extends BaseDialogAct {
     }
 
     private boolean isAlreadyLogin() {
-        Login.LoginInfo info = AppSettings.getInstance(this).getLoginInfo();
+        Login.LoginInfo info = VloveSettings.getInstance(this).getLoginInfo();
         boolean alreadyLogin = info != null && !info.shouldLogin();
         if (alreadyLogin) {
-            VolleyRequest.with(this).setCookie(URL_VLIVE, info.getCookie());
+            VloveRequest.with(this).setCookie(URL_VLIVE, info.getCookie());
         }
         return alreadyLogin;
     }
 
     private void userLoggedIn() {
-        VolleyRequest.StringRequest request;
-        VolleyRequest.with(LoginAct.this.getApplicationContext()).setCookie(URL_VLIVE, LoginAct.this.getCookieLogin());
-        request = new VolleyRequest.StringRequest("https://www.vlive.tv/auth/loginInfo",
+        VloveRequest.ApiRequest request;
+        VloveRequest.with(this).setCookie(URL_VLIVE, getCookieLogin());
+        request = new VloveRequest.ApiRequest("https://www.vlive.tv/auth/loginInfo",
                 response -> {
                     Login.LoginInfo loginInfo = new Login.LoginInfo(response, getCookieLogin());
                     if (loginInfo.isLogin()) {
-                        AppSettings.getInstance(LoginAct.this).setLoginInfo(loginInfo);
-                        VolleyRequest.with(this).setCookie(URL_VLIVE, loginInfo.getCookie());
+                        VloveSettings.getInstance(LoginAct.this).setLoginInfo(loginInfo);
+                        VloveRequest.with(this).setCookie(URL_VLIVE, loginInfo.getCookie());
                         popupSuccess();
                     }
                     else {
@@ -113,9 +114,10 @@ public final class LoginAct extends BaseDialogAct {
                     popupFailed();
                     finish();
                 })
-                .setReferer("https://www.vlive.tv/")
-                .setUserAgent(AppSettings.VLOVE_USER_AGENT);
-        VolleyRequest.with(LoginAct.this.getApplicationContext()).addToQueue(request);
+                .setReferer("https://www.vlive.tv/home")
+                .setHost(VloveSettings.VLIVE_HOST)
+                .addHeader("X-Requested-With", "XMLHttpRequest");
+        VloveRequest.with(this).addToQueue(request);
     }
 
     private boolean isUserLoggedIn(String url) {
@@ -169,7 +171,7 @@ public final class LoginAct extends BaseDialogAct {
     @SuppressLint("SetJavaScriptEnabled")
     private void setupWebLoginSettings() {
         WebSettings settings = webLogin.getSettings();
-        settings.setUserAgentString(AppSettings.VLOVE_USER_AGENT);
+        settings.setUserAgentString(VloveSettings.VLOVE_USER_AGENT);
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setJavaScriptEnabled(true);
         settings.setLoadWithOverviewMode(true);

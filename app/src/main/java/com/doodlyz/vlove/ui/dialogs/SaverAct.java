@@ -45,7 +45,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SaverAct extends BaseDialogAct implements View.OnClickListener {
+public final class SaverAct extends BaseDialogAct implements View.OnClickListener {
     static final String EXTRA_VIDEO_URL = SaverAct.class.getSimpleName() + ".VIDEO_URL:LString";
 
     private int selectedVideo, selectedCaption;
@@ -191,13 +191,9 @@ public class SaverAct extends BaseDialogAct implements View.OnClickListener {
                         captionList.setMinValue(0);
                         captionList.setMaxValue(listCaption.size() - 1);
                         captionList.setDisplayedValues(listCaption.toArray(new String[0]));
-                        captionList.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-
-                            @Override
-                            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                                // TODO Auto-generated method stub
-                                selectedCaption = newVal - 1;
-                            }
+                        captionList.setOnValueChangedListener((picker, oldVal, newVal) -> {
+                            // TODO Auto-generated method stub
+                            selectedCaption = newVal - 1;
                         });
 
                         listCaption.clear();
@@ -338,15 +334,11 @@ public class SaverAct extends BaseDialogAct implements View.OnClickListener {
                 thumbnail = itemView.findViewById(R.id.thumbnail);
                 resolution = itemView.findViewById(R.id.resolution);
 
-                itemView.setOnClickListener(new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        // TODO Auto-generated method stub
-                        highlightedItem = getAdapterPosition();
-                        highlightItem(v, highlightedItem);
-                        notifyDataSetChanged();
-                    }
+                itemView.setOnClickListener(v -> {
+                    // TODO Auto-generated method stub
+                    highlightedItem = getAdapterPosition();
+                    highlightItem(v, highlightedItem);
+                    notifyDataSetChanged();
                 });
             }
 

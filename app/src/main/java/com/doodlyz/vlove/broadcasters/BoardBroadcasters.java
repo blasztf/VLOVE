@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.os.SystemClock;
 
 import com.doodlyz.vlove.Action;
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.apis.VAPIS;
 import com.doodlyz.vlove.services.BoardService;
 
@@ -29,7 +29,7 @@ public class BoardBroadcasters extends BroadcastReceiver {
     }
 
     private void syncBoard(Context context) {
-        long interval = AppSettings.getInstance(context).getBoardSyncInterval();
+        long interval = VloveSettings.getInstance(context).getBoardSyncInterval();
         if (getSyncBoardIntent(context, true) != null) {
             cancelSyncBoard(context);
         }

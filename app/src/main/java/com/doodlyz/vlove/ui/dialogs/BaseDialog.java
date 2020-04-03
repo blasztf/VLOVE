@@ -5,12 +5,7 @@ import android.content.Intent;
 
 import com.doodlyz.vlove.deprecated.features.WRUtils;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 
 /*package*/ abstract class BaseDialog {
 
@@ -30,7 +25,7 @@ import java.util.HashMap;
 
     private Class<BaseDialogAct> getActClass() {
         try {
-            return (Class<BaseDialogAct>) Class.forName(getClass().getName() + ACTIVITY_CLASS);
+            return (Class<BaseDialogAct>) Class.forName(getClass().getAnnotation(DialogId.class).value() + ACTIVITY_CLASS);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
@@ -73,13 +68,17 @@ import java.util.HashMap;
     /**
      * Show dialog (ps: always put {@linkplain BaseDialog#clearContext()} in the end of this implemented method to make sure context reference are cleared by GC.
      */
-    public final void show() {
+    public void show() {
         Intent intent = getIntent();
         includeExtras(intent);
         setFlag(intent);
         getContext().startActivity(intent);
         clearIntent();
         clearContext();
+    }
+
+    @interface DialogId {
+        String value();
     }
 
 }

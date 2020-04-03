@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.doodlyz.vlove.ui.dialogs.Login;
-import com.doodlyz.vlove.ui.dialogs.LoginAct;
 import com.doodlyz.vlove.ui.dialogs.Popup;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.listener.DexterError;
@@ -26,7 +25,7 @@ import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.single.BasePermissionListener;
 import com.karumi.dexter.listener.single.DialogOnDeniedPermissionListener;
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.R;
 import com.doodlyz.vlove.SettingsActivity;
 import com.doodlyz.vlove.apis.VAPIS;
@@ -58,7 +57,7 @@ public class MenuScreenActivity extends ScreenAbs {
                 content.setLayoutManager(new LinearLayoutManager(this));
                 content.setAdapter(mAdapter);
 
-                if (!AppSettings.getInstance(this).isPopupEnabled()) {
+                if (!VloveSettings.getInstance(this).isPopupEnabled()) {
                     openPopup();
                 } else {
                     mAdapter.setItems(getItems());
@@ -75,7 +74,7 @@ public class MenuScreenActivity extends ScreenAbs {
     protected void onResume() {
         super.onResume();
         if (isVLiveInstalled()) {
-            if (AppSettings.getInstance(this).isPopupEnabled()) {
+            if (VloveSettings.getInstance(this).isPopupEnabled()) {
                 if (mAdapter != null) mAdapter.setItems(getItems());
             }
         }
@@ -157,7 +156,7 @@ public class MenuScreenActivity extends ScreenAbs {
     }
 
     private boolean isVLiveInstalled() {
-        return AppSettings.getInstance(this).isVLiveInstalled();
+        return VloveSettings.getInstance(this).isVLiveInstalled();
     }
 
     private void openVApp() {

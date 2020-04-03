@@ -2,11 +2,9 @@ package com.doodlyz.vlove.data.helper;
 
 import android.os.AsyncTask;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.doodlyz.vlove.StringRequest;
-import com.doodlyz.vlove.VolleyRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;

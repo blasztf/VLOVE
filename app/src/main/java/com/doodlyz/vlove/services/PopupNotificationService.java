@@ -8,7 +8,7 @@ import android.os.Handler;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.apis.VAPIS;
 import com.doodlyz.vlove.ui.dialogs.Popup;
 
@@ -121,7 +121,7 @@ public class PopupNotificationService extends NotificationListenerService {
 
             currentChannel = component[0].trim();
 
-            listChannel = AppSettings.getInstance(this).getWhitelistChannel();
+            listChannel = VloveSettings.getInstance(this).getWhitelistChannel();
 
             if (listChannel != null) {
 
@@ -134,7 +134,7 @@ public class PopupNotificationService extends NotificationListenerService {
 
             }
 
-            listChannel = AppSettings.getInstance(this).getBlacklistChannel();
+            listChannel = VloveSettings.getInstance(this).getBlacklistChannel();
 
             if (listChannel != null) {
 

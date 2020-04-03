@@ -9,12 +9,13 @@ import android.support.annotation.Nullable;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.doodlyz.vlove.VloveUtils;
 import com.doodlyz.vlove.ui.dialogs.Popup;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.doodlyz.vlove.Action;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveRequest;
 import com.doodlyz.vlove.apis.VAPIS;
 import com.doodlyz.vpago.Locale;
 import com.doodlyz.vpago.Translator;
@@ -23,8 +24,6 @@ import com.doodlyz.vpago.TranslatorListener;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class TranslatorService extends IntentService {
 
@@ -51,9 +50,6 @@ public class TranslatorService extends IntentService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-//        Thread.setDefaultUncaughtExceptionHandler(new CrashCocoExceptionHandler("vl_tl"));
-
-
         return Service.START_REDELIVER_INTENT;
     }
 
@@ -71,53 +67,15 @@ public class TranslatorService extends IntentService {
             if ((type = intent.getType()) != null && type.startsWith("text/")) {
                 url = intent.getStringExtra(Intent.EXTRA_TEXT);
             }
-
-//            translate(url, new TranslatorListener() {
-//                @Override
-//                public void onTranslated(String translatedText) {
-//                    Popup.with(TranslatorService.this, Popup.ID_INFO)
-//                            .make("Translation:\n" + translatedText)
-//                            .show();
-//                }
-//
-//                @Override
-//                public void onError(String errorText) {
-//                    Popup.with(TranslatorService.this, Popup.ID_INFO)
-//                            .make("Failed to translate, reason:\n" + errorText)
-//                            .show();
-//                }
-//            });
         }
-    }
-
-
-
-    /**
-     * Find and return "Post ID" + "Channel Code" based on the given <i><b>link</b></i>.
-     * @param link to process.
-     * @return array of string consist of:<ul><li>[0] => Post ID</li><li>[1] => Channel Code</li></ul>
-     * *note: returned output always not null, <i>but</i> items on the output can be null.
-     */
-    private String[] getPIDandCC(String link) {
-        String postId, channelCode;
-        postId = channelCode = null;
-        Pattern regex = Pattern.compile("https?://channels\\.vlive\\.tv/([A-Z0-9]+)/fan/([0-9.]+)");
-        Matcher matcher = regex.matcher(link);
-
-        if (matcher.find()) {
-            postId = matcher.group(2);
-            channelCode = matcher.group(1);
-        }
-
-        return new String[] { postId, channelCode };
     }
 
     private void translate(String url, final TranslatorListener listener) {
-        String[] pidNcid = getPIDandCC(url);
+        String[] pidNcid = VloveUtils.getPIDandCC(url);
         String postId = pidNcid[0];
 //        String channelCode = pidNcid[1];
 
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 VAPIS.getAPIPosts(this, postId),
                 new Response.Listener<String>() {
 
@@ -164,10 +122,10 @@ public class TranslatorService extends IntentService {
                         listener.onError(getString(R.string.trans_fail));
                         error.printStackTrace();
                     }
-                }
-        );
+                })
+                .setHost(null);
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, REQUEST_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleyRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
+        VloveRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
     }
 
 }

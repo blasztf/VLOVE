@@ -3,6 +3,7 @@ package com.doodlyz.vlove.ui.dialogs;
 import android.content.Context;
 import android.content.Intent;
 
+@BaseDialog.DialogId("Translator")
 public class Translator extends BaseDialog {
     private String mUrlOrContent;
 

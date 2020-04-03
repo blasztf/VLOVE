@@ -1,10 +1,18 @@
 package com.doodlyz.vlove.ui.dialogs;
 
+import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Toast;
 
+import com.doodlyz.vlove.R;
+
+@BaseDialog.DialogId("Popup")
 public class Popup extends BaseDialog {
 
     /**
@@ -64,6 +72,18 @@ public class Popup extends BaseDialog {
         mId = id;
     }
 
+    private boolean isScreenLocked() {
+        KeyguardManager kgManager = (KeyguardManager) getContext().getSystemService(Context.KEYGUARD_SERVICE);
+        return kgManager != null && kgManager.isKeyguardLocked();
+    }
+
+    private void toast(String title, String message) {
+        Toast toast = Toast.makeText(getContext(),  title + "\n" + message, Toast.LENGTH_SHORT);
+        View toastView = toast.getView();
+        toastView.getBackground().setColorFilter(ContextCompat.getColor(getContext(), R.color.color_light_blue), PorterDuff.Mode.SRC_IN);
+        toast.show();
+    }
+
     @Override
     void includeExtras(Intent intent) {
         intent.putExtra(PopupAct.EXTRA_ID, mId);
@@ -71,6 +91,16 @@ public class Popup extends BaseDialog {
         intent.putExtra(PopupAct.EXTRA_MESSAGE, mMessage);
         if (mAction != null) {
             intent.putExtra(PopupAct.EXTRA_ACTION, mAction);
+        }
+    }
+
+    @Override
+    public void show() {
+        if (!isScreenLocked()) {
+            toast(mTitle, mMessage);
+        }
+        else {
+            super.show();
         }
     }
 }

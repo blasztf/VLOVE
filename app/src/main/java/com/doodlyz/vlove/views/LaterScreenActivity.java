@@ -62,12 +62,7 @@ public class LaterScreenActivity extends AppCompatActivity implements Screen {
     private void setSupportToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(view -> finish());
         toolbar.setTitle(R.string.pref_group_vlater);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -89,13 +84,10 @@ public class LaterScreenActivity extends AppCompatActivity implements Screen {
             if (!isVideoExists(video)) {
                 VideoOnDemand.getInstance(this).delete(video);
             } else {
-                listItems.add(new LaterItemModel(video, new LaterItemPresenter.OnContentClickListener() {
-                    @Override
-                    public void onContentClick(VideoOnDemand.Video video) {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setDataAndType(Uri.parse(video.getSource()), "video/*");
-                        startActivity(intent);
-                    }
+                listItems.add(new LaterItemModel(video, video1 -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse(video1.getSource()), "video/*");
+                    startActivity(intent);
                 }));
             }
         }

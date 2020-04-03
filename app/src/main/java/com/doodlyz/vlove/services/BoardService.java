@@ -18,13 +18,13 @@ import com.android.volley.VolleyError;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.doodlyz.vlove.Action;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveRequest;
 import com.doodlyz.vlove.apis.VAPIS;
 import com.doodlyz.vlove.databases.Board;
 import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
@@ -35,8 +35,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BoardService extends Service {
     private static final String TAG_VOLLEY_REQUEST = BoardService.class.getSimpleName() + ".TAG_VOLLEY_REQUEST";
@@ -65,7 +63,7 @@ public class BoardService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        VolleyRequest.with(this).cancelPendingRequest(TAG_VOLLEY_REQUEST);
+        VloveRequest.with(this).cancelPendingRequest(TAG_VOLLEY_REQUEST);
     }
 
     private void startSync() {
@@ -126,11 +124,12 @@ public class BoardService extends Service {
     }
 
     private void syncPost(final String postId, final String channelCode, final OnSyncListener listener) {
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 VAPIS.getAPIPosts(this, postId),
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        JsonObject author;
                         try {
                             JsonObject root = new JsonParser().parse(response).getAsJsonObject();
                             String content = root.get("body").getAsString();
@@ -140,9 +139,11 @@ public class BoardService extends Service {
                                 content += "\n\n(" + getString(R.string.board_post_contains_media) + ")";
                             }
 
+                            author = root.get("author").getAsJsonObject();
+
                             Board.Post postBuild = new Board.Post.Builder(postId)
-                                    .setUser(root.get("author").getAsJsonObject().get("nickname").getAsString())
-                                    .setUserImage(root.get("author").getAsJsonObject().get("profile_image").getAsString())
+                                    .setUser(author.get("nickname").getAsString())
+                                    .setUserImage(author.has("profile_image") ? author.get("profile_image").getAsString() : null)
                                     .setContent(content)
                                     .setTotalComment(root.get("comment_count").getAsInt())
                                     .setChannelCode(channelCode)
@@ -177,14 +178,13 @@ public class BoardService extends Service {
                         listener.onError(getString(R.string.board_sync_fail));
                         error.printStackTrace();
                     }
-                }
-        );
+                });
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, REQUEST_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleyRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
+        VloveRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
     }
 
     private void syncComment(final Board.Post post, final OnSyncListener listener) {
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 VAPIS.getAPIComments(this, post.getId()),
                 new Response.Listener<String>() {
                     @Override
@@ -228,30 +228,9 @@ public class BoardService extends Service {
                         listener.onError(getString(R.string.board_sync_fail));
                         error.printStackTrace();
                     }
-                }
-        );
+                });
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, REQUEST_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleyRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
-    }
-
-    /**
-     * Find and return "Post ID" + "Channel Code" based on the given <i><b>link</b></i>.
-     * @param link to process.
-     * @return array of string consist of:<ul><li>[0] => Post ID</li><li>[1] => Channel Code</li></ul>
-     * *note: returned output always not null, <i>but</i> items on the output can be null.
-     */
-    private String[] getPIDandCC(String link) {
-        String postId, channelCode;
-        postId = channelCode = null;
-        Pattern regex = Pattern.compile("https?://channels\\.vlive\\.tv/([A-Z0-9]+)/fan/([0-9.]+)");
-        Matcher matcher = regex.matcher(link);
-
-        if (matcher.find()) {
-            postId = matcher.group(2);
-            channelCode = matcher.group(1);
-        }
-
-        return new String[] { postId, channelCode };
+        VloveRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
     }
 
     private void notifyUserIfNeccessary(Board.Post oldPost, Board.Post newPost) {
@@ -313,7 +292,7 @@ public class BoardService extends Service {
         public void startSync(String link, OnSyncListener listener) {
             OnSyncListener newListener = bindListener(listener);
             if (!isOnSynchronizing) {
-                String[] pidncc = getPIDandCC(link);
+                String[] pidncc = VloveUtils.getPIDandCC(link);
                 if (!Board.getInstance(getService()).contain(pidncc[0])) {
                     setOnSynchronizing(true);
                     getService().syncPost(pidncc[0], pidncc[1], newListener);

@@ -10,13 +10,13 @@ import android.support.v4.app.NotificationCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-import com.doodlyz.vlove.AppSettings;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.deprecated.features.StorageUtils;
-import com.doodlyz.vlove.deprecated.features.UtilNetwork;
+import com.doodlyz.vlove.VloveDownload;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.broadcasters.SaverBroadcaster;
 import com.doodlyz.vlove.data.helper.VideoOnDemandRetriever;
 import com.doodlyz.vlove.databases.VideoOnDemand;
+import com.doodlyz.vlove.deprecated.features.StorageUtils;
 import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
 import com.doodlyz.vlove.ui.helper.NotificationHelper;
 
@@ -87,7 +87,7 @@ public class DownloaderService extends Service {
     }
 
     private void initializeSavePath() {
-        savePath = AppSettings.getInstance(this).getSaverDownloadPath() + File.separator + "VLIVE" + File.separator;
+        savePath = VloveSettings.getInstance(this).getSaverDownloadPath() + File.separator + "VLIVE" + File.separator;
 
         StorageUtils.isDirectoryExists(savePath, true);
     }
@@ -164,7 +164,7 @@ public class DownloaderService extends Service {
                 getContext().stopSelf();
                 clearContext();
             } else {
-                onCancelled(result);
+                onCancelled(false);
             }
         }
 
@@ -214,32 +214,41 @@ public class DownloaderService extends Service {
                 }
                 publishProgress(0);
                 CrashCocoExceptionHandler.with("ds").debugLog(getData().videos.get(getContext().selectedVideo).getSource());
-                File video = UtilNetwork.download(getData().videos.get(getContext().selectedVideo).getSource(), getContext().savePath, getData().videos.get(getContext().selectedVideo).getTitle() + ".mp4", new UtilNetwork.Listener() {
+                VloveDownload.MediaDownload mediaVideo = new VloveDownload.MediaDownload(getData().videos.get(getContext().selectedVideo).getSource());
+                mediaVideo
+                        .setFileName(getData().videos.get(getContext().selectedVideo).getTitle() + ".mp4")
+                        .setSavePath(getContext().savePath)
+                        .setOnProgressListener(value -> {
+                            publishProgress(value);
+                            getContext().sendBridgeData(getContext().getString(R.string.downloading_content, "video"), value);
 
-                    @Override
-                    public void onProgress(int value) {
-                        // TODO Auto-generated method stub
-                        publishProgress(value);
-                        getContext().sendBridgeData(getContext().getString(R.string.downloading_content, "video"), value);
-                    }
-                });
+                            if (isCancelled()) {
+                                mediaVideo.cancel();
+                            }
+                        });
+                VloveDownload.with(getContext()).download(mediaVideo);
 
+                File video = mediaVideo.isDownloaded() ? mediaVideo.getSaveLocation() : null;
                 if (video != null) {
                     videoPath = video.getAbsolutePath();
 
                     if (getContext().selectedCaption >= 0) {
                         getContext().mNotificationBuilder.setContentText(getContext().getString(R.string.downloading_content, "caption"));
                         publishProgress(0);
-                        File caption = UtilNetwork.download(getData().captions.get(getContext().selectedCaption).getSource(), getContext().savePath, getData().videos.get(getContext().selectedVideo).getTitle() + "-" + getData().captions.get(getContext().selectedCaption).getLocale() + ".vtt", new UtilNetwork.Listener() {
+                        VloveDownload.MediaDownload mediaCaption = new VloveDownload.MediaDownload(getData().captions.get(getContext().selectedCaption).getSource());
+                        mediaCaption
+                                .setSavePath(getContext().savePath)
+                                .setFileName(getData().videos.get(getContext().selectedVideo).getTitle() + "-" + getData().captions.get(getContext().selectedCaption).getLocale() + ".vtt")
+                                .setOnProgressListener(value -> {
+                                    publishProgress(value);
+                                    getContext().sendBridgeData(getContext().getString(R.string.downloading_content, "caption"), value);
 
-                            @Override
-                            public void onProgress(int value) {
-                                // TODO Auto-generated method stub
-                                publishProgress(value);
-                                getContext().sendBridgeData(getContext().getString(R.string.downloading_content, "caption"), value);
-                            }
-                        });
-
+                                    if (isCancelled()) {
+                                        mediaCaption.cancel();
+                                    }
+                                });
+                        VloveDownload.with(getContext()).download(mediaCaption);
+                        File caption = mediaCaption.isDownloaded() ? mediaCaption.getSaveLocation() : null;
                         if (caption != null) {
                             captionPath = caption.getAbsolutePath();
 

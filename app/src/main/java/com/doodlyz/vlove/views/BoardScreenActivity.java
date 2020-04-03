@@ -17,7 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.R;
 import com.doodlyz.vlove.databases.Board;
 import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
@@ -99,7 +99,7 @@ public class BoardScreenActivity extends AppCompatActivity implements Screen {
     }
 
     private BoardHeaderModel getBoardHeader() {
-        return new BoardHeaderModel(getString(R.string.board_greet, AppSettings.getInstance(this).getBoardUsername()), new BoardHeaderPresenter.OnSyncClickListener() {
+        return new BoardHeaderModel(getString(R.string.board_greet, VloveSettings.getInstance(this).getBoardUsername()), new BoardHeaderPresenter.OnSyncClickListener() {
             @Override
             public void onSyncClick(String link) {
                 if (!isStillSync()) {

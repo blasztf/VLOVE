@@ -7,9 +7,9 @@ import android.text.Html;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveRequest;
 import com.doodlyz.vlove.apis.VAPIS;
 import com.doodlyz.vlove.databases.VideoOnDemand;
 import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
@@ -25,8 +25,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +49,7 @@ public class VideoOnDemandRetriever {
 
     public void cancel() {
         mCancel = true;
-        VolleyRequest.with(mContext.get()).cancelPendingRequest(tag);
+        VloveRequest.with(mContext.get()).cancelPendingRequest(tag);
         clearContext();
     }
 
@@ -74,6 +72,10 @@ public class VideoOnDemandRetriever {
         execute(url);
     }
 
+    private Context getContext() {
+        return mContext.get();
+    }
+
     private void clearContext() {
         mContext.clear();
         mContext = null;
@@ -85,7 +87,7 @@ public class VideoOnDemandRetriever {
 
     private void execute0(final String url) {
         final String videoId = getId(url);
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 url,
                 new Response.Listener<String>() {
                     @Override
@@ -147,17 +149,8 @@ public class VideoOnDemandRetriever {
                         }
                         mListener.onError("execute0: \n\n response: " + response + "\n\n status code: " + error.networkResponse.statusCode);
                     }
-                }) {
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Host", "www.vlive.tv");
-                headers.put("User-Agent", AppSettings.VLOVE_USER_AGENT);
-                return headers;
-            }
-        } ;
-        VolleyRequest.with(mContext).addToQueue(request);
+                });
+        VloveRequest.with(getContext()).addToQueue(request);
     }
 
     /**
@@ -167,7 +160,7 @@ public class VideoOnDemandRetriever {
      */
     private void execute1(final String videoId, final String channelCode, final String longVideoId, final String key) {
         String url = VAPIS.getAPIVideoCount(mContext.get(), videoId, channelCode, System.currentTimeMillis());
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 url,
                 new Response.Listener<String>() {
                     @Override
@@ -184,19 +177,10 @@ public class VideoOnDemandRetriever {
                     public void onErrorResponse(VolleyError error) {
                         mListener.onError("execute1: " + error.getMessage());
                     }
-                }) {
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Host", "www.vlive.tv");
-                headers.put("Referer", "http://www.vlive.tv/video/" + videoId);
-                headers.put("User-Agent", AppSettings.VLOVE_USER_AGENT);
-                headers.put("X-Requested-With", "XMLHttpRequest");
-                return headers;
-            }
-        };
-        VolleyRequest.with(mContext).addToQueue(request);
+                })
+                .setReferer(String.format("http://www.vlive.tv/video/%s", videoId))
+                .addHeader("X-Requested-With", "XMLHttpRequest");
+        VloveRequest.with(getContext()).addToQueue(request);
     }
 
     /**
@@ -208,7 +192,7 @@ public class VideoOnDemandRetriever {
      */
     private void execute2(final String videoId, final String channelCode, final String longVideoId, final String key) {
         String url = VAPIS.getAPIVideoInfo(mContext.get(), longVideoId, key);
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 url,
                 new Response.Listener<String>() {
                     @Override
@@ -225,17 +209,9 @@ public class VideoOnDemandRetriever {
                     public void onErrorResponse(VolleyError error) {
                         mListener.onError("execute2: " + error.getMessage());
                     }
-                }) {
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Host", "global.apis.naver.com");
-                headers.put("User-Agent", AppSettings.VLOVE_USER_AGENT);
-                return headers;
-            }
-        };
-        VolleyRequest.with(mContext).addToQueue(request);
+                })
+                .setHost(VloveSettings.APIS_NAVER_HOST);
+        VloveRequest.with(getContext()).addToQueue(request);
     }
 
     /**
@@ -302,7 +278,7 @@ public class VideoOnDemandRetriever {
                 .setDuration(meta.getDouble("duration"));
 
                 meta = meta.getJSONObject("encodingOption");
-                builder.setResolution(meta.getString("name").replaceAll("[pP]", "").trim())
+                builder.setResolution(meta.getString("value").replaceAll("[pP]", "").trim())
                 .setWidth(meta.getInt("width"))
                 .setHeight(meta.getInt("height"))
                 .setViewCount(mVideoViewCount)

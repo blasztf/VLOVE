@@ -2,8 +2,8 @@ package com.doodlyz.vlove.data.helper;
 
 import android.content.Context;
 
-import com.doodlyz.vlove.AppSettings;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveSettings;
+import com.doodlyz.vlove.VloveRequest;
 import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
 
 import org.json.JSONException;
@@ -38,18 +38,18 @@ class FanshipHelper {
 
     private void getVideoStatus(Context context, String videoId, String channelCode, String[] extraParams, Listener listener) {
         String api = String.format("https://www.vlive.tv/video/init/view?videoSeq=%s&channelCode=%s", videoId, channelCode);
-        String vpdid2 = AppSettings.getInstance(context).getVLivePlusDeviceId();
+        String vpdid2 = VloveSettings.getInstance(context).getVLivePlusDeviceId();
         if (!vpdid2.isEmpty()) {
             api += "&vpdid2=" + vpdid2;
         }
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 api,
                 response -> {
                     String[] result = parseVideoStatus(response);
                     if (result.length == 4) {
                         extraParams[2] = result[1];
                         extraParams[3] = result[2];
-                        AppSettings.getInstance(context).setVLivePlusDeviceId(result[3]);
+                        VloveSettings.getInstance(context).setVLivePlusDeviceId(result[3]);
                     }
                     listener.onSuccess(extraParams, result[0]);
                     CrashCocoExceptionHandler.with("FH.R").debugLog(response);
@@ -59,10 +59,9 @@ class FanshipHelper {
                     CrashCocoExceptionHandler.with("FH").debugLog(error);
                     listener.onSuccess(extraParams, error.getMessage());
                 })
-                .setUserAgent(AppSettings.VLOVE_USER_AGENT)
-                .setHost("www.vlive.tv")
+                .setHost(VloveSettings.VLIVE_HOST)
                 .setReferer(String.format("https://www.vlive.tv/video/%s?channelCode=%s", videoId, channelCode));
-        VolleyRequest.with(context).addToQueue(request);
+        VloveRequest.with(context).addToQueue(request);
     }
 
     private String[] parseVideoStatus(String response) {

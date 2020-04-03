@@ -1,12 +1,14 @@
 package com.doodlyz.vlove.ui.dialogs;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+@BaseDialog.DialogId("Login")
 public class Login extends BaseDialog {
 //    private static final String AUTH_FORMAT = "{ \"message\" : { \"cookie\" : \"%s\", \"token\" : \"%s\", \"snsType\" : \"%s\", \"nickName\" : \"%s\", \"login\" : %b, \"timeStamp\" : %d } }";
     private static final long MAX_LIMIT_LOGIN_TIME = 1000L * 60L * 60L * 24L; // Expired on 1 day.
@@ -27,6 +29,10 @@ public class Login extends BaseDialog {
         private String cookie;
         private long timestamp;
 
+        /**
+         * Constructor out.
+         * @param loginInfoText
+         */
         public LoginInfo(String loginInfoText) {
             parse(loginInfoText);
             if (cookie.isEmpty()) {
@@ -34,6 +40,11 @@ public class Login extends BaseDialog {
             }
         }
 
+        /**
+         * Constructor in.
+         * @param response
+         * @param cookie
+         */
         LoginInfo(String response, String cookie) {
             parse(response);
             this.cookie = cookie;

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.doodlyz.vlove.BuildConfig;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveRequest;
 
 import static com.doodlyz.vlove.versions.VersionControlImpl.VERSION_STATUS_ERROR;
 import static com.doodlyz.vlove.versions.VersionControlImpl.VERSION_STATUS_NEWER;
@@ -15,12 +15,12 @@ public final class VersionControl {
     public static void validate(Context context) {
         final VersionControlImpl versionControl = validateContext(context);
         if (versionControl != null) {
-            VolleyRequest.StringRequest request;
-            request = new VolleyRequest.StringRequest(
+            VloveRequest.ApiRequest request;
+            request = new VloveRequest.ApiRequest(
                     context.getString(R.string.url_version_control_source),
                     response -> versionControl.onVersionReady(getValidationStatus(response)),
                     error -> versionControl.onVersionReady(VERSION_STATUS_ERROR));
-            VolleyRequest.with(context).addToQueue(request);
+            VloveRequest.with(context).addToQueue(request);
         }
     }
 

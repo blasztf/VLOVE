@@ -1,22 +1,18 @@
 package com.doodlyz.vlove.ui.dialogs;
 
-import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.doodlyz.vlove.AppSettings;
+import com.doodlyz.vlove.VloveSettings;
 import com.doodlyz.vlove.R;
 
 public final class PopupAct extends BaseDialogAct {
@@ -53,36 +49,21 @@ public final class PopupAct extends BaseDialogAct {
         String title = intent.getStringExtra(EXTRA_TITLE);
         String message = intent.getStringExtra(EXTRA_MESSAGE);
 
-        // Show popup notification (force user to see the notification [mwahahahahahaha]).
-        if (isScreenLocked()) {
-            PendingIntent action = intent.getParcelableExtra(EXTRA_ACTION);
-            if (action == null) action = determineAction(title);
+        PendingIntent action = intent.getParcelableExtra(EXTRA_ACTION);
+        if (action == null) action = determineAction(title);
 
-            setContentText(id, title, message);
-            setContentAction(action);
+        setContentText(id, title, message);
+        setContentAction(action);
 
-            setFinishOnTouchOutside(false);
-            wakeLock();
-            enableVibrate();
-        }
-        // Toast that information to user.
-        else {
-            toastContent(title, message);
-            finish();
-        }
+        setFinishOnTouchOutside(false);
+        wakeLock();
+        enableVibrate();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         disableVibrate();
-    }
-
-    private void toastContent(String title, String message) {
-        Toast toast = Toast.makeText(this,  title + "\n" + message, Toast.LENGTH_SHORT);
-        View toastView = toast.getView();
-        toastView.getBackground().setColorFilter(ContextCompat.getColor(this, R.color.color_light_blue), PorterDuff.Mode.SRC_IN);
-        toast.show();
     }
 
     private void setContentText(int id, String title, String message) {
@@ -151,7 +132,7 @@ public final class PopupAct extends BaseDialogAct {
     }
 
     private void enableVibrate() {
-        if (AppSettings.getInstance(this).isPopupUseVibrate()) {
+        if (VloveSettings.getInstance(this).isPopupUseVibrate()) {
             mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
             if (mVibrator != null && mVibrator.hasVibrator()) {
                 long[] pattern = {100, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000, 500, 1000};
@@ -166,12 +147,7 @@ public final class PopupAct extends BaseDialogAct {
     }
 
     private void disableVibrate() {
-        if (AppSettings.getInstance(this).isPopupUseVibrate() && mVibrator != null && mVibrator.hasVibrator()) mVibrator.cancel();
-    }
-
-    private boolean isScreenLocked() {
-        KeyguardManager kgManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
-        return kgManager != null && kgManager.isKeyguardLocked();
+        if (VloveSettings.getInstance(this).isPopupUseVibrate() && mVibrator != null && mVibrator.hasVibrator()) mVibrator.cancel();
     }
 
     private void wakeLock() {

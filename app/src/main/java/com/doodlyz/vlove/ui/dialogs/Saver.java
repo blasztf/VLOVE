@@ -3,6 +3,7 @@ package com.doodlyz.vlove.ui.dialogs;
 import android.content.Context;
 import android.content.Intent;
 
+@BaseDialog.DialogId("Saver")
 public class Saver extends BaseDialog {
     private String mUri;
 

@@ -1,6 +1,5 @@
 package com.doodlyz.vlove.ui.dialogs;
 
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,11 +12,12 @@ import android.widget.TextView;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.doodlyz.vlove.VloveUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.doodlyz.vlove.Action;
 import com.doodlyz.vlove.R;
-import com.doodlyz.vlove.VolleyRequest;
+import com.doodlyz.vlove.VloveRequest;
 import com.doodlyz.vlove.apis.VAPIS;
 import com.doodlyz.vlove.logger.CrashCocoExceptionHandler;
 import com.doodlyz.vpago.Locale;
@@ -25,10 +25,8 @@ import com.doodlyz.vpago.TranslatorListener;
 
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-public class TranslatorAct extends BaseDialogAct {
+public final class TranslatorAct extends BaseDialogAct {
 
     private static final String TAG_VOLLEY_REQUEST = TranslatorAct.class.getSimpleName() + ".TAG_VOLLEY_REQUEST";
     private static final String POST_NOT_EXIST = "This post does not exist.";
@@ -179,26 +177,6 @@ public class TranslatorAct extends BaseDialogAct {
         return 0;  //-1;
     }
 
-    /**
-     * Find and return "Post ID" + "Channel Code" based on the given <i><b>link</b></i>.
-     * @param link to process.
-     * @return array of string consist of:<ul><li>[0] => Post ID</li><li>[1] => Channel Code</li></ul>
-     * *note: returned output always not null, <i>but</i> items on the output can be null.
-     */
-    private String[] getPIDandCC(String link) {
-        String postId, channelCode;
-        postId = channelCode = null;
-        Pattern regex = Pattern.compile("https?://channels\\.vlive\\.tv/([A-Z0-9]+)/fan/([0-9.]+)");
-        Matcher matcher = regex.matcher(link);
-
-        if (matcher.find()) {
-            postId = matcher.group(2);
-            channelCode = matcher.group(1);
-        }
-
-        return new String[] { postId, channelCode };
-    }
-
     private void doTranslation() {
         if (mSourceLocale.equals(mTargetLocale)) {
             setTargetValue(mSourceLocale, mTranslatorFromText.getText().toString());
@@ -209,11 +187,11 @@ public class TranslatorAct extends BaseDialogAct {
     }
 
     private void doTranslation(String url) {
-        String[] pidNcid = getPIDandCC(url);
+        String[] pidNcid = VloveUtils.getPIDandCC(url);
         String postId = pidNcid[0];
 //        String channelCode = pidNcid[1];
 
-        VolleyRequest.StringRequest request = new VolleyRequest.StringRequest(
+        VloveRequest.ApiRequest request = new VloveRequest.ApiRequest(
                 VAPIS.getAPIPosts(this, postId),
                 new Response.Listener<String>() {
 
@@ -261,7 +239,7 @@ public class TranslatorAct extends BaseDialogAct {
                 }
         );
         request.setRetryPolicy(new DefaultRetryPolicy(DefaultRetryPolicy.DEFAULT_TIMEOUT_MS, REQUEST_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        VolleyRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
+        VloveRequest.with(this).addToQueue(request, TAG_VOLLEY_REQUEST);
     }
 
 }
